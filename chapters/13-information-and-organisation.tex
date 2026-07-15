@@ -1,0 +1,59 @@
+\chapter{Information and organisation}
+\label{ch:information-systems}
+
+\section{A motivating problem}
+A municipality buys a case-management platform because it promises efficiency. After deployment, employees keep a private spreadsheet, citizens repeat information at multiple desks, and managers cannot agree on what a \enquote{resolved case} means. The implementation did not fail because people irrationally resisted technology. It failed because the system changed work, authority, information, and accountability.
+
+\learningobjectives{You should be able to analyse information systems as sociotechnical systems; distinguish data, information, knowledge, and organisational routines; explain business processes and system types; analyse value, adoption, power, governance, privacy, procurement, migration, legacy, and implementation; and evaluate organisational benefits without treating technology as an isolated optimisation.}
+
+\section{The five-minute explanation}
+An information system is a coordinated arrangement of people, practices, data, technologies, and rules that produces and uses information. Its value is not located solely in software features. A system can create value by supporting coordination, decisions, accountability, service access, learning, or control. It can also redistribute work and power.
+
+Data is a recorded distinction. Information is data interpreted in a context. Knowledge includes justified understanding and the ability to act. These categories are useful teaching distinctions, not a universal ladder.
+
+\section{Processes and system types}
+A business process is a connected set of activities that transforms inputs into outcomes for a stakeholder. Model both the official process and the workarounds. Transaction-processing systems record routine events. Management-information systems aggregate operations for monitoring. Decision-support systems help analyse alternatives. ERP integrates organisational functions; CRM coordinates relationships with customers or citizens; supply-chain systems coordinate material, information, and financial flows. Platform systems mediate interactions among groups and often create governance questions.
+
+The same software can serve several roles depending on how it is embedded. A dashboard that supports local learning differs from one used for punitive surveillance even if the charts are identical.
+
+\section{Value and success}
+A value claim should identify beneficiary, mechanism, outcome, comparison, and cost. The DeLone--McLean model distinguishes dimensions such as system quality, information quality, use, user satisfaction, and net benefits, while recognising that success is multidimensional \citep{delone1992success}. Technology acceptance models can explain some adoption beliefs, but acceptance is not the same as beneficial use \citep{davis1989usefulness,venkatesh2003user}.
+
+For CivicQueue, possible benefits include fewer unnecessary telephone calls, easier rescheduling, better slot utilisation, and more predictable staff work. Possible costs include exclusion, training time, notification burden, privacy risk, and duplicated administration. Evaluate both.
+
+\section{Implementation, adoption, and resistance}
+Implementation is a change process. It includes procurement, configuration, integration, migration, training, support, governance, incentives, and learning. Resistance may signal workload, loss of discretion, mistrust, poor fit, or a legitimate concern. Shadow IT can be a workaround, an innovation site, a security risk, or all three.
+
+Sociotechnical perspectives reject the idea that a technology has one fixed effect independent of use. Orlikowski's work on the duality of technology shows how structures are both enabled and reproduced through practice \citep{orlikowski1992duality}. Power and politics influence which requirements are accepted and whose failure becomes visible \citep{markus1983power}.
+
+\section{Governance, privacy, and data}
+Data governance defines ownership, quality responsibilities, access, retention, provenance, and decision rights. GDPR principles such as purpose limitation, data minimisation, accuracy, storage limitation, integrity, and accountability should be connected to actual flows and roles, not cited as abstract slogans \citep{gdpr2016}.
+
+A data map should identify collection, processing, sharing, storage, retention, deletion, and user rights. In CivicQueue, an audit event may improve accountability but also create sensitive records. A notification provider may receive contact data. A data-protection impact assessment may be appropriate when processing creates significant risks.
+
+\section{Procurement, integration, and legacy}
+Vendor selection should evaluate functional fit, interoperability, exit options, security, accessibility, service levels, total cost, data portability, and organisational capability. Integration can fail through incompatible identifiers, timing assumptions, semantic mismatch, or ownership ambiguity. A legacy system is not merely old code; it may contain institutional knowledge and operational dependencies. Migration should include data profiling, mapping, validation, rehearsal, rollback, and communication.
+
+\section{Organisational benefit evaluation}
+A before-and-after change can be descriptive but is vulnerable to time trends, selection, and concurrent changes. A process measure such as average handling time is not necessarily a service benefit. Combine quantitative indicators with observation and interviews, and specify whose perspective defines benefit.
+
+\section{Project application}
+Draw the technical architecture and the organisational process side by side. Identify which roles gain or lose discretion, which routines change, what training is needed, and which benefits are plausible but untested. When presenting the work, explain why a technically elegant solution might be rejected by the organisation and what alternative implementation path you would propose.
+
+\section{Summary and key terms}
+Information systems are sociotechnical arrangements. Data gains meaning through context and practice. System value is multidimensional and contested. Adoption, resistance, shadow IT, power, governance, migration, and legacy are part of system development. Evaluation must include costs, distributional effects, and alternative explanations.
+
+\begin{keyterms}information system; data; information; knowledge; business process; transaction processing; MIS; decision support; ERP; CRM; platform; value creation; adoption; resistance; shadow IT; governance; GDPR; migration; legacy; sociotechnical system.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Why is a private spreadsheet not automatically evidence that the official system is unnecessary?}
+\solution{It may be a workaround for a missing view, a temporary coordination tool, or an unsafe duplicate source. It reveals a mismatch between system and work, but its presence alone does not establish which system should be authoritative or what risks the spreadsheet creates.}
+
+\exercise{Give one example of a technical quality and one organisational quality for CivicQueue.}
+\solution{Technical quality might be transaction integrity so that a slot cannot be double-booked. Organisational quality might be that staff can resolve exceptions without duplicating data entry. The two interact but are not the same measure.}
+
+\exercise{How can implementation change power?}
+\solution{A system can make some decisions visible to managers, constrain frontline discretion, allocate work automatically, or give citizens new ways to challenge records. These changes can redistribute authority even when the software is described as administrative.}
+
+\section{Further reading}
+For further reading on information-system types, organisational value, implementation problems, and research methods, compare \citet{checkland1990soft} with \citet{orlikowski1992duality}. Together they show why organisational problems cannot be reduced to technical requirements.

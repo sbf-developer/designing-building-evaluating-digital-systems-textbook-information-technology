@@ -1,0 +1,58 @@
+\chapter{Reference tables}
+\label{app:tables}
+
+\section{Common complexity classes}
+\begin{center}
+\begin{tabularx}{0.96\textwidth}{@{}p{0.16\textwidth}p{0.30\textwidth}X@{}}
+\toprule
+\textbf{Class} & \textbf{Typical example} & \textbf{Interpretation}\\
+\midrule
+$O(1)$ & hash lookup, under assumptions & bounded by input size in the model\\
+$O(\log n)$ & binary search on sorted indexed data & repeated reduction of search space\\
+$O(n)$ & linear scan & work proportional to input size\\
+$O(n\log n)$ & comparison sorting families & near-linear times logarithmic growth\\
+$O(n^2)$ & nested pair comparison & all or many pairs\\
+\bottomrule
+\end{tabularx}
+\end{center}
+These are growth descriptions, not benchmark results.
+
+\section{Selected HTTP status meanings}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+200 & successful response\\
+201 & resource created\\
+204 & successful response with no content\\
+400 & malformed or invalid request\\
+401 & authentication required or failed\\
+403 & authenticated but not authorised\\
+404 & resource not found\\
+409 & conflict with current state\\
+422 & semantically invalid content, where used by the API\\
+429 & rate limit exceeded\\
+500 & unexpected server failure\\
+503 & service temporarily unavailable\\
+\bottomrule
+\end{tabular}
+\end{center}
+The exact API contract should define which status is used for which condition.
+
+\section{Evaluation-method selection}
+\begin{center}
+\begin{tabular}{p{0.25\textwidth}p{0.55\textwidth}}
+\toprule
+\textbf{Question} & \textbf{Useful method}\\
+\midrule
+Can experts identify interaction violations? & heuristic evaluation\\
+Can a new user discover the task? & cognitive walkthrough or user study\\
+What do people do in context? & observation or contextual inquiry\\
+How do people describe trust or confusion? & interview or think-aloud\\
+Does one version differ under a task? & comparative study with pre-defined outcomes\\
+Does an organisational outcome change? & longitudinal or quasi-experimental design with process evidence\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Security review prompts}
+Identify assets, actors, trust boundaries, input validation, authorisation, secrets, logging, dependencies, rate limits, recovery, privacy, accessibility, and misuse. A checklist is a starting point; the threat model determines relevance.

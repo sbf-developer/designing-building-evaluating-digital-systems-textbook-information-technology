@@ -1,0 +1,111 @@
+\chapter{Web and full-stack application development}
+\label{ch:web}
+
+\section{A motivating problem}
+A citizen clicks \enquote{request new time}. The browser sends a request through a network. The server authenticates the user, checks authorisation, validates the input, applies a domain rule, writes data, and returns a response. The browser renders feedback. If any step is misunderstood, the prototype may work only on the developer's machine.
+
+\learningobjectives{You should be able to trace a request through a full-stack system; explain HTTP, REST-style resource design, JSON, client and server responsibilities, authentication and authorisation; design validation and error handling; and discuss configuration, deployment, monitoring, and architectural trade-offs.}
+
+\section{The five-minute explanation}
+A full-stack application is a set of cooperating layers:
+\begin{enumerate}
+\item the client presents information and captures interaction;
+\item the network transports a request and response;
+\item the server applies application and domain logic;
+\item persistence stores and retrieves durable state;
+\item external services provide identity, notifications, or other capabilities;
+\item operation practices keep the system observable and changeable.
+\end{enumerate}
+The layers are not physical boxes in every deployment. They are responsibilities that should be identifiable.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=10mm, every node/.style={font=\small}, box/.style={draw, rounded corners, fill=pale, minimum width=39mm, minimum height=11mm, align=center}, arr/.style={-{Latex}, thick, blue}]
+\node[box] (browser) {browser\\HTML, CSS, JavaScript};
+\node[box,below=of browser] (http) {HTTP request / response};
+\node[box,below=of http] (server) {web server\\route and validation};
+\node[box,below=of server] (domain) {domain and application logic};
+\node[box,below=of domain] (db) {database transaction};
+\draw[arr] (browser)--(http);
+\draw[arr] (http)--(server);
+\draw[arr] (server)--(domain);
+\draw[arr] (domain)--(db);
+\draw[arr] (db)--node[right,xshift=24mm]{response path}(browser);
+\end{tikzpicture}
+\caption{The path of a CivicQueue request. Every arrow is a possible failure boundary.}
+\label{fig:request-path}
+\end{figure}
+
+\section{HTTP and resource design}
+HTTP has methods, status codes, headers, and a message body. A \texttt{GET} should retrieve a representation without changing server state; a \texttt{POST} commonly requests creation or an action; \texttt{PUT} replaces a resource representation; \texttt{PATCH} partially modifies it; \texttt{DELETE} requests removal. These are conventions with semantics, not magic names.
+
+A REST-style API exposes resources and representations. For CivicQueue, a client might request \texttt{GET /api/appointments/42} or \texttt{POST /api/appointments/42/reschedule}. The second path is an action endpoint; a different design could model a rescheduling request as a new resource. The choice should reflect domain meaning and idempotency.
+
+\section{Frontend state and feedback}
+The browser has state: the current route, form values, loading status, errors, and cached data. Do not show success before the server confirms success. Disable or de-duplicate a submission only when the interaction design and server semantics support it. Accessible feedback must be perceivable by people who do not see a visual colour change.
+
+\section{Backend boundaries}
+A route should translate an HTTP request into an application call and an application result into an HTTP response. It should not contain every domain rule and SQL query. A small Flask route can look like this:
+
+\begin{lstlisting}[language=Python,caption={A deliberately thin route boundary.}]
+@app.post("/api/appointments/<int:appointment_id>/cancel")
+def cancel_appointment(appointment_id: int):
+    actor = current_user()
+    result = appointment_service.cancel(appointment_id, actor)
+    if result.is_not_found:
+        return {"error": "appointment not found"}, 404
+    if result.is_forbidden:
+        return {"error": "not allowed"}, 403
+    if result.is_conflict:
+        return {"error": "appointment cannot be cancelled"}, 409
+    return {"status": "cancelled"}, 200
+\end{lstlisting}
+
+The service contains the policy; the repository handles persistence; the route maps outcomes to protocol responses. Error messages should not disclose information to unauthorised callers.
+
+\section{Authentication and authorisation}
+Authentication answers who the actor is. Authorisation answers what that actor may do. A valid login does not grant access to every appointment. Enforce authorisation on the server for every protected operation. Sessions usually store a server-side identifier in a secure cookie; tokens can carry claims but require careful expiry, storage, rotation, and revocation decisions. Do not put secrets in browser code.
+
+\section{Validation and error handling}
+Validate at multiple boundaries. Client-side validation improves feedback; server-side validation is authoritative. Validate type, range, format, ownership, state, and business rules. Use status codes consistently: malformed input may be 400, unauthenticated 401, forbidden 403, missing 404, conflict 409, and unexpected failure 500. Do not expose stack traces in production.
+
+\section{Configuration, migrations, and deployment}
+Configuration varies across environments and should be supplied through environment variables or a managed configuration system. Secrets should not be committed to Git. Database schema changes need migrations that can be reviewed, applied, and rolled back or forward safely. A container packages an application and its runtime assumptions, but it does not automatically make the system secure or scalable.
+
+A small deployment needs a process manager, TLS termination, database backups, logs, health checks, and a rollback plan. Twelve-factor principles are useful reminders about configuration, stateless processes, logs, and disposability, but they must be adapted to the system's data and operational context.
+
+\section{Performance and scalability}
+Measure the path that users experience. Network latency, database indexes, serialisation, queueing, and rendering all contribute. Horizontal scaling creates coordination questions about sessions, caches, transactions, and background jobs. Microservices are not a maturity badge; they add network boundaries, deployment complexity, and distributed failure modes. A modular monolith can be a better starting point.
+
+\section{The recurring case implementation}
+The supplied example application uses Flask and SQLite to remain small enough to inspect. It includes:
+\begin{itemize}
+\item an HTML interface and JSON endpoints;
+\item a domain service for appointment state;
+\item parameterised SQL;
+\item database initialisation and seed data;
+\item tests for domain and request behaviour;
+\item a clear limitation: authentication is a demonstration boundary, not production identity.
+\end{itemize}
+Read the directory before changing it. Trace one request from browser form to response, then add one failure test.
+
+\section{Project application}
+Show the request lifecycle in a diagram, document API contracts, and explain where authentication, authorisation, validation, persistence, and error mapping occur. When presenting the work, be prepared to answer what happens when the request is repeated, the database is unavailable, the external service times out, or the browser submits stale data.
+
+\section{Summary and key terms}
+Full-stack development connects client interaction, HTTP, server logic, domain rules, persistence, and operation. Protocol semantics and domain semantics should not be confused. Authentication and authorisation are different. Validation belongs at trust boundaries. Deployment requires configuration, migrations, observability, security, and recovery plans.
+
+\begin{keyterms}client; server; HTTP; REST; resource; JSON; frontend state; backend; domain logic; persistence; authentication; authorisation; session; token; validation; migration; container; deployment; observability; scalability.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Why is returning HTTP 200 before the database transaction commits dangerous?}
+\solution{The client receives a success claim before the durable state is known to exist. A later failure can leave the user and system with different beliefs. The response should reflect the transaction result or explicitly represent an asynchronous pending state.}
+
+\exercise{A user can view their own appointment but changes the URL to another identifier. Which security property is missing?}
+\solution{Server-side object-level authorisation is missing. Authentication identifies the caller but does not establish that the caller may access the referenced appointment. The service must check ownership or another explicit permission.}
+
+\exercise{When is a modular monolith preferable to microservices?}
+\solution{When the domain and team boundaries are still uncertain, deployment scale is modest, and a single transaction or shared model simplifies correctness. Services can be extracted later when the boundary and operational benefit justify the distributed-system cost.}
+
+\section{Further reading}
+HTTP semantics are specified in RFC 9110 \citep{rfc9110}; REST is an architectural style described in \citet{fielding2000architectural}. Use the HTML standard \citep{whatwghtml} and the OWASP guidance \citep{owasptop10} for implementation and security details.

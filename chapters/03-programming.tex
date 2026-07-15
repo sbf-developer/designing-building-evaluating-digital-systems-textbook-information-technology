@@ -1,0 +1,116 @@
+\chapter{Programming from first principles}
+\label{ch:programming}
+
+\section{A motivating problem}
+Suppose a staff member asks for a script that lists appointments occurring tomorrow. A first attempt might appear to work on a small sample, but a real system must also handle time zones, missing data, invalid dates, duplicate records, permissions, and tests. Programming is the activity of expressing a procedure so that a computer can execute it. Good programming also requires making assumptions, boundaries, and failure behaviour explicit.
+
+\learningobjectives{You should be able to explain how source code reaches execution, use Python values and control flow correctly, design functions with clear contracts, handle errors, work with files and structured data, and write tests that expose assumptions.}
+
+\section{The five-minute explanation}
+A program is a sequence of instructions interpreted by a runtime or translated by a compiler into a lower-level representation. Python source is parsed into an internal representation and executed by the Python runtime. The exact implementation varies, but the enduring ideas are source text, syntax, semantics, state, control flow, and effects.
+
+\plainlanguage{A variable is not a labelled box containing a string of characters. In Python it is a name bound to an object. Assignment changes a binding; mutation changes an object. Keeping those ideas separate prevents many bugs.}
+
+\section{Values, names, and types}
+Python values include integers, floating-point numbers, booleans, strings, lists, dictionaries, and user-defined objects. A type describes the operations and representation available for values of a kind. Python checks many type constraints at runtime; static type checkers can detect additional inconsistencies before execution.
+
+\begin{lstlisting}[language=Python,caption={Bindings, mutation, and a type-annotated function.}]
+def add_fee(amount: float, fee: float) -> float:
+    if amount < 0 or fee < 0:
+        raise ValueError("amounts must be non-negative")
+    return amount + fee
+
+first = ["requested"]
+second = first
+second.append("confirmed")
+assert first == ["requested", "confirmed"]
+\end{lstlisting}
+
+The two names refer to the same list object. If independent lists are needed, create a copy with \texttt{first.copy()}. An assertion expresses an assumption that should remain true at that point in the program.
+
+\section{Expressions and control flow}
+An expression produces a value. A statement performs an action such as assignment, branching, looping, or returning. A conditional is a choice between paths. A loop repeats a block while a condition holds or for each element of an iterable. The important question is not how many keywords a language has, but which control-flow graph the program creates.
+
+\begin{lstlisting}[language=Python,caption={Filtering appointments with an explicit predicate.}]
+def confirmed_for_day(appointments: list[dict], day: str) -> list[dict]:
+    """Return confirmed appointments whose ISO date equals day."""
+    return [
+        appointment
+        for appointment in appointments
+        if appointment.get("status") == "confirmed"
+        and appointment.get("date") == day
+    ]
+\end{lstlisting}
+
+The function uses a list comprehension, but the same logic can be written as a loop. Choose the form that makes the invariant and failure behaviour clearest to the team.
+
+\section{Functions as contracts}
+A function should have a small purpose, named inputs, a documented output, and an explicit error policy. A contract can be described as:
+\[
+\{P\}\;C\;\{Q\},
+\]
+where $P$ is a precondition, $C$ is the command or function, and $Q$ is a postcondition. For \texttt{add\_fee}, $P$ is that both inputs are non-negative numbers; $Q$ is that the returned value equals their sum and is non-negative. A contract does not make a function correct automatically. It makes the claim inspectable and testable.
+
+\section{Input, output, and files}
+External input is untrusted and may be absent, malformed, stale, or malicious. Parse it at the boundary, validate it, and convert it to an internal representation. JSON is a data interchange format, not a security boundary. Never treat data from a request as executable code.
+
+\begin{lstlisting}[language=Python,caption={Safe JSON loading at a file boundary.}]
+import json
+from pathlib import Path
+
+def load_records(path: Path) -> list[dict]:
+    with path.open(encoding="utf-8") as handle:
+        data = json.load(handle)
+    if not isinstance(data, list):
+        raise ValueError("expected a JSON array")
+    if not all(isinstance(item, dict) for item in data):
+        raise ValueError("every record must be a JSON object")
+    return data
+\end{lstlisting}
+
+Use context managers so files close even if parsing raises an exception. Validate the shape before using fields. In a production service, add limits on file size and record count.
+
+\section{Errors, exceptions, and debugging}
+An error is a mismatch between the program's assumptions and the current situation. Exceptions are one mechanism for transferring control to an error handler. Catch exceptions at a boundary where recovery is possible; do not catch every exception and silently continue. A useful debugging report records the smallest input that reproduces the problem, expected behaviour, actual behaviour, and the first violated assumption.
+
+\section{Testing and executable examples}
+The examples directory contains tests alongside the code. A unit test checks a small behaviour in isolation; an integration test checks interactions among components; an end-to-end test follows a user-visible path. Tests are executable claims. They do not remove the need for inspection, threat modelling, accessibility evaluation, or exploratory testing.
+
+\begin{lstlisting}[language=Python,caption={A small test for the appointment filter.}]
+def test_confirmed_for_day_ignores_other_statuses():
+    rows = [
+        {"status": "confirmed", "date": "2026-09-01"},
+        {"status": "cancelled", "date": "2026-09-01"},
+        {"status": "confirmed", "date": "2026-09-02"},
+    ]
+    assert confirmed_for_day(rows, "2026-09-01") == [rows[0]]
+\end{lstlisting}
+
+The test is precise about status and date. It does not test time zones, malformed records, or permissions; those belong in further tests.
+
+\section{Web foundations}
+HTML represents document structure; CSS describes presentation; JavaScript can manipulate the Document Object Model and respond to browser events. HTTP carries requests and responses between clients and servers. A browser event may trigger a request, which invokes server logic, changes persistence, returns a response, and produces visible feedback. Chapter~\ref{ch:web} develops the full path.
+
+\section{Code quality and security}
+Readable names, small functions, consistent formatting, dependency control, and version history reduce the cost of reasoning. Security is a property of the whole system: input validation, authentication, authorisation, secrets management, logging, dependency updates, and safe defaults must be designed together. OWASP's Top 10 is a useful awareness list, not a complete security specification \citep{owasptop10}.
+
+\section{Project application}
+Start a project with a small vertical slice: one user action, one domain rule, one persistence operation, one visible result, and one test. This makes integration risks visible early. When documenting the work, show the requirements traceability from user need to function to test. When presenting it, explain which code is deliberately simple and what would change for production.
+
+\section{Summary and key terms}
+Programming combines representation, control flow, state, functions, effects, and error handling. Names refer to values; mutation and rebinding differ. Contracts express assumptions. Tests provide executable evidence about specified behaviours. Secure and maintainable code requires boundary validation, clear ownership, and feedback from execution.
+
+\begin{keyterms}source code; runtime; value; object; binding; type; expression; statement; control flow; function; scope; precondition; postcondition; invariant; exception; test; module; dependency; API.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{What is the difference between \texttt{second = first} and \texttt{second = first.copy()} when \texttt{first} is a list?}
+\solution{The first assignment creates a second name for the same list, so mutation through either name is visible through both. \texttt{copy()} creates a new list with the same current elements, so appending to one list does not append to the other. Nested mutable objects require a deeper copy if independent nested state is needed.}
+
+\exercise{Write a contract for a function that reserves an appointment slot.}
+\solution{A possible precondition is that the slot exists, is in the future, and the caller is authorised. The postcondition is that exactly one reservation is created and the slot is no longer available, or that the operation returns a well-defined conflict without changing state. Concurrency means the postcondition must hold even when two requests arrive together.}
+
+\exercise{Name three tests that the appointment filter still needs beyond the example.}
+\solution{Tests could cover an empty input, a missing \texttt{status} field, a malformed date, duplicate records, and a date with no confirmed appointments. The correct selection depends on the contract and threat model; a test is useful only when its expected behaviour is justified.}
+
+\section{Further reading}
+Good programming practice connects computational thinking, data structures, functions, web basics, testing, and the evaluation of programming solutions. For a gentle introduction, see \citet{downey2015think}; the Python documentation is the reference for language behaviour \citep{pythonlanguage}.

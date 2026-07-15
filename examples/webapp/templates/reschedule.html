@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Change appointment · CivicQueue{% endblock %}
+{% block content %}
+  <h1>Choose a new time</h1>
+  {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+  {% if slots %}
+    <form method="post">
+      <label for="slot_id">Available slot</label>
+      <select id="slot_id" name="slot_id" required>
+        <option value="">Choose a time</option>
+        {% for slot in slots %}
+          <option value="{{ slot['id'] }}">{{ slot['service_name'] }} — {{ slot['starts_at'] }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Confirm new time</button>
+    </form>
+  {% else %}
+    <p>No available slots are currently shown. Try again or contact the service centre.</p>
+  {% endif %}
+  <p><a href="{{ url_for('index') }}">Return to appointments</a></p>
+{% endblock %}

@@ -1,0 +1,84 @@
+\usepackage[a4paper,margin=29mm,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric,calc}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{csquotes}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\definecolor{ink}{HTML}{17202A}
+\definecolor{blue}{HTML}{1F5A85}
+\definecolor{teal}{HTML}{167D8D}
+\definecolor{pale}{HTML}{EEF5F7}
+\definecolor{codebg}{HTML}{F4F6F7}
+\definecolor{rulegray}{HTML}{AAB7B8}
+\definecolor{covernavy}{HTML}{0B1F33}
+\definecolor{coverblue}{HTML}{153E5C}
+\definecolor{coverteal}{HTML}{56C6C0}
+\definecolor{covercoral}{HTML}{F07B68}
+\definecolor{covermist}{HTML}{DCEBED}
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=teal,urlcolor=blue,pdftitle={Designing, Building, and Evaluating Digital Systems},pdfauthor={Scott Brodie Forsyth}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlist{itemsep=0.2em,topsep=0.3em}
+\setcounter{tocdepth}{1}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\thepage}
+\fancyhead[L]{\small\itshape\nouppercase{\rightmark}}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\color{ink}}
+  {\filleft\Large\chaptertitlename\ \thechapter}
+  {1ex}
+  {\Huge\filright}
+\titleformat{\section}{\Large\bfseries\color{blue}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\large\bfseries\color{teal}}{\thesubsection}{0.7em}{}
+
+\lstdefinestyle{bookcode}{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{teal},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  frame=single,
+  rulecolor=\color{rulegray},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  columns=fullflexible
+}
+\lstset{style=bookcode}
+
+\newcommand{\learningobjectives}[1]{\begin{quote}\textbf{What you will learn.} #1\end{quote}}
+\newcommand{\plainlanguage}[1]{\begin{quote}\textbf{In plain language.} #1\end{quote}}
+\newcommand{\warningbox}[1]{\begin{quote}\colorbox{pale}{\parbox{0.92\linewidth}{\textbf{Caution.} #1}}\end{quote}}
+\newcommand{\exambox}[1]{\begin{quote}\textbf{Project checkpoint.} #1\end{quote}}
+\newcommand{\exercise}[1]{\paragraph{Exercise.} #1}
+\newcommand{\solution}[1]{\paragraph{Worked solution.} #1}
+\newcommand{\term}[1]{\textit{#1}}
+
+\newenvironment{keyterms}{\begin{quote}\textbf{Key terms.}\ }{\end{quote}}

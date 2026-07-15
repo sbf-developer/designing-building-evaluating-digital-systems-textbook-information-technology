@@ -1,0 +1,48 @@
+\chapter{Python, Git, and the command line}
+\label{app:tools}
+
+\section{Create a reproducible Python environment}
+From the project root:
+\begin{lstlisting}[language=bash]
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r examples/webapp/requirements.txt
+python -m unittest discover -s examples -p 'test_*.py' -v
+\end{lstlisting}
+On Windows PowerShell, activation uses \texttt{.venv\textbackslash Scripts\textbackslash Activate.ps1}. The environment isolates project dependencies; it does not make untrusted code safe.
+
+\section{Run and inspect code}
+Use \texttt{python path/to/file.py} to run a script. Use \texttt{python -m compileall} to check syntax without executing application behaviour. Prefer modules with functions that can be imported and tested rather than scripts whose only interface is printing.
+
+\section{Git essentials}
+\begin{lstlisting}[language=bash]
+git init
+git status
+git add path/to/file
+git commit -m "Describe the change"
+git log --oneline --decorate
+git diff
+git switch -c feature/rescheduling
+git switch main
+git merge feature/rescheduling
+\end{lstlisting}
+A commit is a snapshot and message, not a guarantee of quality. Do not commit passwords, API keys, private data, generated virtual environments, or local databases. Use a reviewed ignore file.
+
+\section{Debugging loop}
+Reproduce the problem with the smallest input. Read the complete error message. Identify the first violated assumption rather than patching the last symptom. Add a regression test. Change one thing. Run the relevant test and the complete suite. Record the explanation in the issue or decision log.
+
+\section{Code review questions}
+\begin{enumerate}
+\item Does the change satisfy a stated requirement?
+\item Are inputs validated at the boundary?
+\item Are permissions checked on the server?
+\item What happens on duplicate, stale, missing, or malicious input?
+\item Are tests meaningful and independent?
+\item Does the change affect accessibility, privacy, performance, or operations?
+\item Is the documentation sufficient for another student to run it?
+\end{enumerate}
+
+\section{Command-line habits}
+Use a clear working directory, quote paths with spaces, inspect before deleting, and keep generated output separate from source. A shell command can have side effects; read it before running it. The build instructions in the repository are the authoritative sequence for this book.
+

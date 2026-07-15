@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}My appointments · CivicQueue{% endblock %}
+{% block content %}
+  <h1>My appointments</h1>
+  <p class="intro">A small example of a public-service appointment workflow.</p>
+  {% if appointments %}
+    <ul class="appointments">
+    {% for appointment in appointments %}
+      <li>
+        <div>
+          <strong>{{ appointment["service_name"] }}</strong>
+          <span>{{ appointment["starts_at"] }}</span>
+          <span>Status: {{ appointment["status"] }}</span>
+        </div>
+        {% if appointment["status"] == "confirmed" %}
+          <a class="button" href="{{ url_for('reschedule', appointment_id=appointment['id']) }}">Change time</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>No appointments found.</p>
+  {% endif %}
+  <p class="fallback">Need help? Contact the service centre by telephone. Digital access is not the only access route.</p>
+{% endblock %}

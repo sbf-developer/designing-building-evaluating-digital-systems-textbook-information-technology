@@ -1,0 +1,77 @@
+\documentclass[11pt,oneside]{book}
+\input{preamble}
+
+\begin{document}
+\frontmatter
+\input{frontmatter/cover}
+
+\thispagestyle{empty}
+\null\vfill
+\begin{center}
+{\large\bfseries Designing, Building, and Evaluating Digital Systems\par}
+\vspace{6mm}
+Scott Brodie Forsyth\par
+\vspace{6mm}
+\textcopyright\ 2026 Scott Brodie Forsyth\par
+\vspace{8mm}
+This is an independent textbook written for learning, discussion, and practice. It is not affiliated with or endorsed by any university, institution, or organisation.
+\end{center}
+\vfill\null
+\cleardoublepage
+
+\input{frontmatter/preface}
+\input{frontmatter/how-to-use}
+\input{frontmatter/programme-map}
+\input{frontmatter/bridge}
+
+\tableofcontents
+\listoffigures
+\mainmatter
+
+\part{Foundations: problems, models, and programs}
+\include{chapters/01-information-technology}
+\include{chapters/02-computational-thinking}
+\include{chapters/03-programming}
+\include{chapters/04-algorithms}
+
+\part{Engineering systems}
+\include{chapters/05-software-engineering}
+\include{chapters/06-object-oriented-design}
+\include{chapters/07-systems-modelling}
+\include{chapters/08-web-and-full-stack}
+\include{chapters/09-databases}
+\include{chapters/10-security-testing-operations}
+
+\part{People, organisations, and development practice}
+\include{chapters/11-interaction-design}
+\include{chapters/12-evaluation-accessibility}
+\include{chapters/13-information-and-organisation}
+\include{chapters/14-agile-pbl-and-teams}
+
+\part{Evidence, AI, and independent work}
+\include{chapters/15-research-methods}
+\include{chapters/16-human-centred-ai}
+\include{chapters/17-entrepreneurship}
+\include{chapters/18-masters-thesis}
+
+\part{Integration projects}
+\include{chapters/19-civicqueue-case}
+\include{chapters/20-integration-projects}
+
+\appendix
+\include{appendices/math-and-logic}
+\include{appendices/python-git-and-cli}
+\include{appendices/reference-tables}
+\include{appendices/glossary}
+
+\backmatter
+\bibliographystyle{plainnat}
+\bibliography{references}
+\chapter*{Name index}
+\addcontentsline{toc}{chapter}{Name index}
+\noindent\textit{A searchable PDF index can be generated from the source with the standard LaTeX indexing tools. The principal authors and concepts are also listed in the glossary and bibliography.}
+\chapter*{Subject index}
+\addcontentsline{toc}{chapter}{Subject index}
+\noindent\textit{The table of contents, key terms, and cross-references provide the subject index for this compact edition.}
+
+\end{document}

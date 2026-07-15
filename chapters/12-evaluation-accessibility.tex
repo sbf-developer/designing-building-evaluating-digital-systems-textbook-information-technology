@@ -1,0 +1,63 @@
+\chapter{Evaluating interfaces and interactive systems}
+\label{ch:evaluation}
+
+\section{A motivating problem}
+The CivicQueue team says, \enquote{users liked the new design}. That sentence may mean that participants praised the visual style, completed tasks faster, felt less anxious, or merely wanted to be polite. Evaluation turns a design claim into a question with a method, measure, sample, and interpretation.
+
+\learningobjectives{You should be able to choose among heuristic evaluation, cognitive walkthroughs, interviews, observation, think-aloud studies, questionnaires, and experiments; define usability and accessibility measures; analyse qualitative and quantitative evidence; discuss reliability and validity; and report limitations without inflating conclusions.}
+
+\section{The five-minute explanation}
+Evaluation asks whether an artefact or design performs in relation to a purpose and criterion. Usability commonly includes effectiveness, efficiency, and satisfaction in a specified context. User experience is broader and may include emotion, meaning, trust, and long-term consequences. Accessibility concerns whether people with diverse abilities can perceive, operate, understand, and robustly use the system. Aesthetic preference is a different construct.
+
+A claim such as \enquote{the new design is better} is incomplete. Better for whom, at which task, compared with what, measured how, and with what uncertainty?
+
+\section{Inspection methods}
+Heuristic evaluation asks trained evaluators to inspect an interface against principles such as visibility of system status, match with the real world, user control, consistency, error prevention, recognition rather than recall, flexibility, minimalist design, error recovery, and help. Heuristics help find problems; they do not measure actual user performance \citep{nielsen1990heuristic}.
+
+A cognitive walkthrough examines whether a new or infrequent user can form the correct goal, notice the action, associate it with the goal, and understand the feedback. It is useful for task learnability, but its result depends on the evaluator's assumptions.
+
+\section{User studies}
+A think-aloud study asks participants to verbalise their reasoning while performing tasks. It can expose mental models and uncertainty, but talking may change performance. Observation reveals behaviour and workarounds. Interviews reveal accounts and interpretations. Use a task script, consent procedure, recording plan, and stopping rule appropriate to the risk.
+
+A small formative study can identify severe problems without estimating a population parameter. If the purpose is to compare two interfaces, pre-specify tasks, outcomes, analysis, and exclusions. A/B testing can provide useful evidence only when exposure, randomisation, interference, ethics, and practical significance are considered.
+
+\section{Measures}
+Task success may be binary or defined by a rubric. Time-on-task is sensitive to task definition and interruptions. Error rate requires a consistent error coding scheme. Satisfaction scales require instructions, scoring, and interpretation. The System Usability Scale has ten items and a specific scoring procedure; its score is a measure under that instrument, not a universal truth \citep{brooke1996sus}.
+
+If $n$ participants have success indicators $Y_i\in\{0,1\}$, the observed success proportion is
+\[
+\hat p=\frac{1}{n}\sum_{i=1}^{n}Y_i.
+\]
+The symbols mean: $n$ is the number of observed participants, $Y_i$ is participant $i$'s coded outcome, and $\hat p$ is the sample proportion. It estimates a target only under assumptions about sampling, task definition, and measurement. Report the denominator and uncertainty; do not present a percentage without context.
+
+\section{Qualitative coding}
+Qualitative analysis is not a pile of quotations. Define the unit of analysis, code relevant material, compare cases, revise the codebook, and explain how themes were constructed. A theme is a patterned meaning relevant to the research question. Braun and Clarke's thematic-analysis framework is influential, but different epistemological positions imply different standards for reflexivity and claims \citep{braun2006thematic}.
+
+\section{Reliability and validity}
+Reliability concerns consistency of a measurement or procedure. Validity concerns whether the measure supports the intended interpretation. A reliable measure can be invalid if it consistently measures the wrong construct. Internal validity concerns alternative explanations within a study. External validity concerns transfer or generalisation. Construct validity concerns the relation between operationalisation and concept.
+
+Evaluation validity is therefore an argument. Document the construct, measure, participants, procedure, analysis, and limitations.
+
+\section{Accessibility evaluation}
+Combine automated checks, manual keyboard and screen-reader inspection, and testing with people who use relevant assistive technologies. Automated tools can detect some structural problems and miss context, task clarity, focus order, or confusing language. Test the complete task, including errors, timeouts, and human fallback.
+
+\section{Project application}
+Before recruiting, write an evaluation protocol. State the research question, design, population, sampling, task, measures, analysis, ethical safeguards, and decision rule. When documenting the work, distinguish formative findings from comparative evidence. When presenting it, explain one plausible alternative interpretation of your result.
+
+\section{Summary and key terms}
+Evaluation makes design claims answerable to evidence. Inspection methods and user studies answer different questions. Measures require operational definitions and denominators. Qualitative coding requires an analytic procedure. Reliability, construct validity, internal validity, external validity, and accessibility are distinct arguments. Evidence supports bounded interpretations, not automatic claims of superiority.
+
+\begin{keyterms}usability; user experience; accessibility; heuristic evaluation; cognitive walkthrough; think-aloud; task success; error rate; System Usability Scale; qualitative coding; theme; reliability; validity; construct; internal validity; external validity; formative evaluation.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Why would a heuristic evaluation and a usability test find different problems?}
+\solution{Heuristic evaluation uses trained inspection against principles and can identify consistency, feedback, or error-prevention problems without recruiting users. A usability test observes people performing tasks and can reveal misunderstandings, workarounds, and timing that the evaluator did not anticipate. Each method has different blind spots.}
+
+\exercise{A study reports that 9 of 10 participants succeeded. What can you conclude?}
+\solution{You can report that 9 of the 10 observed participants succeeded under the specified procedure. You cannot automatically conclude that 90 percent of the target population would succeed, that the interface caused success, or that it is better than an alternative.}
+
+\exercise{Give one example of a reliable but invalid measure in an interface study.}
+\solution{A timer that consistently records the time from page load rather than task start may be reliable but invalid for task duration. A questionnaire that consistently captures visual appeal when the claim concerns trust is another possibility.}
+
+\section{Further reading}
+For HCI research methods, see \citet{lazar2017research}; for empirical software studies, see \citet{wohlin2012experimentation}. Use WCAG as a technical reference, while recognising that conformance is not the same as contextual usability.

@@ -1,0 +1,47 @@
+\chapter{Mathematics and logic bridge}
+\label{app:math}
+
+\section{Propositions and logical connectives}
+A proposition is a statement that is either true or false in a given interpretation. If $P$ and $Q$ are propositions, then $P\land Q$ means both are true, $P\lor Q$ means at least one is true, and $\neg P$ means not $P$. The implication $P\Rightarrow Q$ is false only when $P$ is true and $Q$ is false. It does not mean that $P$ causes $Q$.
+
+For example, let $P$ be \enquote{the slot is available} and $Q$ be \enquote{the reservation may proceed}. A rule may state $P\land A\Rightarrow Q$, where $A$ represents authorisation. The system must not silently drop either condition.
+
+\section{Predicates and quantifiers}
+A predicate is a statement whose truth depends on variables. $\forall x\in X\,P(x)$ means that $P$ holds for every element of $X$. $\exists x\in X\,P(x)$ means that at least one element satisfies $P$. The appointment invariant in Chapter~\ref{ch:civicqueue} uses a universal quantifier because it must hold for every slot.
+
+\section{Sets, functions, and relations}
+Set operations include union $A\cup B$, intersection $A\cap B$, difference $A\setminus B$, and Cartesian product $A\times B$. A relation is a subset of a Cartesian product. A function is a relation with exactly one output per input. In data modelling, ask whether a relationship is one-to-one, one-to-many, or many-to-many.
+
+\section{Sequences and sums}
+A sequence is an ordered list $(a_1,a_2,\ldots,a_n)$. The notation
+\[
+\sum_{i=1}^{n}a_i
+\]
+means add the values $a_i$ for indices from 1 through $n$.
+The arithmetic mean is
+\[
+\bar a=\frac{1}{n}\sum_{i=1}^{n}a_i.
+\]
+The mean is sensitive to extreme values and is meaningful only for a defined measurement scale and population of observations.
+
+\section{Proof ideas}
+A direct proof starts with assumptions and derives the conclusion. A proof by contradiction assumes the conclusion is false and derives an impossibility. Induction uses a base case and a step from $n$ to $n+1$. In software, a loop invariant plays a similar role: it links local execution to a global correctness claim.
+
+\section{Probability}
+A probability model assigns values from 0 to 1 to events. If events $A$ and $B$ are mutually exclusive, $P(A\cup B)=P(A)+P(B)$. Conditional probability is
+\[
+P(A\mid B)=\frac{P(A\cap B)}{P(B)}
+\]
+when $P(B)>0$. The notation means the probability of $A$ given that $B$ occurred. Confusing $P(A\mid B)$ with $P(B\mid A)$ is a common error.
+
+Expected value for a discrete variable is
+\[
+E[X]=\sum_x xP(X=x).
+\]
+It is a long-run average under the specified distribution, not necessarily an outcome that can occur in one run.
+
+\section{Vectors and matrices}
+A vector is an ordered tuple of numbers. A matrix is a rectangular array. In machine learning, $x$ may be a feature vector and $w^\top x$ a weighted sum. Matrix dimensions must agree: if $w$ and $x$ each have $d$ components, their dot product is $\sum_{j=1}^{d}w_jx_j$.
+
+\section{Units and dimensional reasoning}
+Keep units visible. A rate of 2 appointments per hour multiplied by 3 hours gives 6 appointments. Adding 2 hours to 3 appointments is meaningless. Dimensional checks catch some implementation and model errors before execution.

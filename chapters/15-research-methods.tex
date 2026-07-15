@@ -1,0 +1,82 @@
+\chapter{Research on interactive systems}
+\label{ch:research}
+
+\section{A motivating problem}
+The CivicQueue team builds a working prototype and calls it a research contribution. A supervisor asks: What is the research question? Which concept is being studied? What evidence would support the claim? What alternative explanation remains? A functioning artefact can be valuable without producing generalisable knowledge; a research contribution requires a defensible relation among question, theory, method, evidence, and claim.
+
+\learningobjectives{You should be able to formulate researchable questions; search and synthesise literature; distinguish qualitative, quantitative, mixed-methods, case, experimental, and design-science approaches; reason about sampling, measurement, reliability, validity, ethics, and reproducibility; and report bounded claims.}
+
+\section{The five-minute explanation}
+Research is a systematic, transparent inquiry aimed at answering a question or contributing knowledge. The word systematic does not mean mechanical. It means that the route from question to conclusion is sufficiently explicit for others to evaluate. A project can build, describe, explain, predict, interpret, or evaluate; these purposes imply different designs.
+
+A product asks \enquote{can we build this?} Research asks \enquote{what can we justifiably claim after building or studying it?} The two may be integrated, but they should not be conflated.
+
+\section{Questions, concepts, and frameworks}
+A research question identifies a phenomenon, population or context, relation, process, or comparison. Concepts such as usability, trust, adoption, privacy, workload, and organisational value need definitions. A conceptual framework states how the selected concepts are related and which mechanisms or assumptions guide inquiry.
+
+A literature review is an argument about what is known, how it is known, where findings disagree, and what remains open. Search terms, databases, inclusion criteria, and citation chaining should be recorded. A list of summaries is not a synthesis.
+
+\section{Qualitative, quantitative, and mixed methods}
+Qualitative methods study meaning, practice, interpretation, and context using interviews, observation, documents, interaction traces, and coding. Quantitative methods represent variables numerically and estimate patterns, differences, associations, or uncertainty. Mixed methods combines approaches when their integration answers a question better than either alone.
+
+A method is not defined by the type of data alone. A log can support quantitative counts or qualitative interpretation. An interview can be analysed descriptively or used to develop a measure. The research question and epistemological assumptions matter.
+
+\section{Study designs}
+\begin{description}
+\item[Case study] An in-depth investigation of a contemporary phenomenon in context, with explicit case and evidence boundaries \citep{runeson2009case}.
+\item[Experiment] Manipulates an intervention and compares outcomes under specified assignment and measurement conditions.
+\item[Survey] Measures reported characteristics or attitudes in a sample; validity depends on question wording, sampling, non-response, and construct measurement.
+\item[Usability study] Observes or evaluates interaction in relation to tasks and users.
+\item[Design science] Builds and evaluates an artefact while contributing design knowledge, constructs, methods, or theory.
+\item[Systematic synthesis] Uses a transparent search and selection process to combine prior evidence.
+\end{description}
+
+A design can be rigorous without being large. Rigour comes from fit, transparency, and justified inference.
+
+\section{Sampling and measurement}
+A population is the set to which a claim refers. A sample is the observed subset. Probability sampling supports some forms of generalisation; purposive sampling can support depth and conceptual relevance. Convenience sampling is not automatically invalid, but its limitations must shape the claim.
+
+Measurement maps a construct to an observation. If \emph{trust} is measured by one agreement item, the item is not identical to the construct. Reliability, content validity, construct validity, and criterion validity are different considerations. A precise number can be a poor measure.
+
+\section{Uncertainty and effect estimates}
+For an observed mean $\bar x$ from $n$ observations, the standard error describes sampling variability under a model. A simple confidence interval may be written
+\[
+\bar x \pm t^\ast\frac{s}{\sqrt n},
+\]
+where $\bar x$ is the sample mean, $s$ the sample standard deviation, $n$ the sample size, and $t^\ast$ a critical value determined by the chosen interval and degrees of freedom. This interval is not a probability statement that the fixed parameter lies inside after the data are observed. Its interpretation depends on the sampling and model assumptions.
+
+For a comparative study, report the difference, uncertainty, data-generating context, and practical meaning. A small p-value does not establish a large or important effect; a non-significant result does not prove no effect.
+
+\section{Validity and causal claims}
+Internal validity concerns whether the study supports the claimed explanation rather than a confounder, selection effect, history, measurement change, or attrition. External validity concerns transfer. Construct validity concerns operationalisation. Statistical conclusion validity concerns whether the analysis supports the stated pattern.
+
+Causal language requires a counterfactual comparison: what would have happened to the same units under another condition. A before-and-after change in CivicQueue may reflect seasonal demand, staffing, policy, or regression to the mean. Use a design appropriate to the claim, and prefer descriptive language when causal identification is weak.
+
+\section{Ethics, consent, and reproducibility}
+Research involving people requires appropriate consent, data minimisation, confidentiality, risk assessment, and a plan for withdrawal where applicable. Ethical review is not a formatting step. Participants may be employees, citizens, or learners with unequal power.
+
+Reproducibility benefits from versioned code, data dictionaries, analysis scripts, preregistered decisions when appropriate, documented exclusions, and an account of missing data. Privacy may require synthetic data, controlled access, or non-release of raw records. Openness is constrained by rights and risk.
+
+\section{Academic argumentation}
+A research argument has a claim, reasons, evidence, assumptions, and limitations. Separate findings from interpretation. Do not let a limitation paragraph erase an overbroad headline. Use tables that connect research questions to data and analysis.
+
+\section{Project application}
+A project proposal should state the problem, question, concepts, literature, design, artefact if any, data, analysis, ethics, timeline, and intended contribution. When presenting it, explain why a different method was not chosen and what evidence would falsify or weaken the conclusion.
+
+\section{Summary and key terms}
+Research produces defensible claims, not merely software. Questions, concepts, frameworks, methods, measures, samples, and analyses must fit. Validity concerns the inference, not only the instrument. Causal claims require counterfactual reasoning. Ethics, uncertainty, reproducibility, and limitations are part of the result.
+
+\begin{keyterms}research question; conceptual framework; literature review; qualitative; quantitative; mixed methods; case study; experiment; survey; design science; population; sample; measurement; reliability; validity; uncertainty; causal claim; reproducibility; reflexivity.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Turn \enquote{does CivicQueue work?} into a descriptive and a comparative research question.}
+\solution{Descriptive: \enquote{How do citizens and staff use the rescheduling workflow during the first four weeks of a pilot?} Comparative: \enquote{Compared with the existing telephone process, does access to CivicQueue change rescheduling completion time or error rate under specified conditions?} The comparative question still needs a design and measures.}
+
+\exercise{Why can a case study be rigorous without a representative sample?}
+\solution{Its purpose may be analytical depth and explanation of a bounded case rather than population estimation. Rigour requires a clear case boundary, evidence chain, alternative explanations, and justified transfer claims.}
+
+\exercise{What is the difference between an artefact and a contribution?}
+\solution{The artefact is what was built. The contribution is what others can learn from the work, such as a validated design principle, an empirical finding, a method, a theoretical refinement, or a reusable system component. The relation must be argued and evidenced.}
+
+\section{Further reading}
+For HCI methods, see \citet{lazar2017research}; for software-engineering experimentation, see \citet{wohlin2012experimentation}; for causal and quasi-experimental design, see \citet{shadish2002experimental}.

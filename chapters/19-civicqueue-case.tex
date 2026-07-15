@@ -1,0 +1,160 @@
+\chapter{Complete worked case: CivicQueue}
+\label{ch:civicqueue}
+
+\section{Why a complete case matters}
+Most tutorials show a function, a diagram, or a database query in isolation. Real projects fail at the boundaries between them. This case follows one bounded intervention through problem discovery, requirements, user research, domain modelling, interface design, architecture, implementation, persistence, testing, deployment, evaluation, and research reflection.
+
+CivicQueue is fictional. It is not a prescription for public-sector systems and contains no real citizen data.
+
+\section{Problem discovery}
+The starting observation is that people who need to change an appointment often call the centre, wait, and sometimes fail to reach the right person. Staff report repeated manual entry and late changes. These observations are hypotheses about a process, not proof that a web application is the best intervention.
+
+The team conducts:
+\begin{itemize}
+\item short observations of the current booking and rescheduling process;
+\item interviews with citizens, front-desk staff, and a service manager;
+\item document analysis of appointment rules and privacy procedures;
+\item a review of existing calendar and case-system interfaces.
+\end{itemize}
+The team records contradictions instead of averaging them away. Citizens value flexibility; staff value control over scarce slots; managers value predictable utilisation; data-protection officers value minimisation and auditability.
+
+\section{Stakeholder analysis and delimitation}
+The first release is deliberately bounded:
+\begin{itemize}
+\item one service centre;
+\item one service type;
+\item authenticated citizens who already have an appointment;
+\item rescheduling to an available future slot;
+\item staff visibility of changes;
+\item a human and telephone fallback.
+\end{itemize}
+Out of scope are automated eligibility decisions, cross-municipality identity, emergency appointments, and production payment or notification integration. Delimitation is an engineering and research decision.
+
+\section{Requirements and traceability}
+The project writes requirements in plain language and adds acceptance criteria.
+
+\begin{longtable}{p{0.08\textwidth}p{0.28\textwidth}p{0.38\textwidth}p{0.14\textwidth}}
+\caption{CivicQueue requirements and evidence.}\\
+\toprule
+ID & Requirement & Acceptance criterion & Evidence\\
+\midrule
+R1 & A citizen can view their appointment & Only the authenticated owner sees the appointment details and status & request test\\
+R2 & A citizen can request a future available slot & The server rejects unavailable or past slots without changing the current appointment & domain and integration tests\\
+R3 & A slot cannot be double-booked & Concurrent or repeated attempts leave at most one active reservation & database constraint and transaction test\\
+R4 & A user receives clear feedback & Success, validation failure, conflict, and service failure are distinguishable and accessible & usability and accessibility review\\
+R5 & Staff can review changes & A staff view shows the old and new status with an audit event & query and workflow test\\
+R6 & A non-digital fallback exists & The interface gives a telephone or staff route without punishing the user & user research and process review\\
+\bottomrule
+\end{longtable}
+
+\section{Domain model}
+The key distinction is between an available slot and an appointment. A slot has service, location, start time, end time, and capacity. An appointment links a citizen to a slot and has a lifecycle. A rescheduling action either creates a new confirmed appointment and releases the old one, or leaves the old state unchanged.
+
+The invariant is:
+\[
+\forall s\in\text{Slots},\quad \#\{\text{active appointments for }s\}\le 1.
+\]
+The quantifier $\forall$ means \enquote{for every}; the expression says that no slot has more than one active appointment. The database constraint and application transaction must work together to enforce it.
+
+\section{Interaction design}
+The primary task flow is:
+\begin{enumerate}
+\item view current appointment;
+\item select \enquote{change time};
+\item inspect available slots with date, time zone, service, and location;
+\item choose a slot;
+\item review consequences;
+\item confirm;
+\item receive success or a conflict with a recovery route.
+\end{enumerate}
+The interface does not silently cancel the old appointment when the new reservation fails. The success message identifies the new time. The conflict message explains that the slot was taken and returns the user to available options.
+
+The team tests a low-fidelity prototype before implementing the visual design. It checks language, grouping, back navigation, error recovery, and whether users understand that a change is not complete until confirmation.
+
+\section{Architecture}
+The system uses a modular monolith:
+\begin{itemize}
+\item presentation: HTML templates and a small JSON API;
+\item application service: use-case orchestration and authorisation checks;
+\item domain: appointment state transitions and value validation;
+\item persistence: parameterised SQL and transactions;
+\item external boundary: an adapter for future identity and notification providers.
+\end{itemize}
+This architecture is adequate for the bounded case and avoids introducing distributed-system costs before the domain boundary is known.
+
+\section{Implementation}
+The repository contains a runnable Flask application. Run its tests before changing it. The application uses a local SQLite database for teaching. Production identity, TLS, secret management, backups, concurrency configuration, and deployment hardening are deliberately outside the demo's safety claims.
+
+A request to reschedule passes through:
+\[
+\text{form} \rightarrow \text{route} \rightarrow \text{service} \rightarrow \text{transaction} \rightarrow \text{response} \rightarrow \text{feedback}.
+\]
+The route does not decide whether a cancelled appointment can be completed. The domain service does. The database does not know the user's intention; it enforces structural constraints.
+
+\section{Database and transaction}
+The seed data contains citizens, services, slots, and appointments. A reservation transaction:
+\begin{enumerate}
+\item begins a transaction;
+\item checks that the caller owns the current appointment;
+\item checks that the target slot is future and available;
+\item inserts the new appointment;
+\item changes the old appointment to cancelled or rescheduled;
+\item writes an audit event;
+\item commits or rolls back as one unit.
+\end{enumerate}
+A unique constraint protects the slot even if two requests pass the application-level availability check. The service maps a uniqueness conflict to an explicit user-facing response.
+
+\section{Testing}
+The test plan follows the risk:
+\begin{itemize}
+\item unit tests for legal and illegal appointment transitions;
+\item repository tests for constraints and parameterised queries;
+\item request tests for ownership and HTTP status mapping;
+\item integration tests for successful and conflicting rescheduling;
+\item keyboard and screen-reader checks for the primary task;
+\item exploratory tests for refresh, back navigation, stale slots, and timeouts.
+\end{itemize}
+A green test run supports the tested claims. It does not establish deployment readiness or population-level service benefit.
+
+\section{Deployment and operation}
+For a real deployment, document the runtime, environment variables, secrets, database migration, TLS, backups, health check, logs, alert owner, and rollback. The demonstration app can run locally; that is evidence of local reproducibility, not evidence of availability or security in a public service.
+
+\section{Evaluation}
+The team separates three questions:
+\begin{enumerate}
+\item Can intended users complete the rescheduling task?
+\item Does the integrated system preserve correctness and privacy?
+\item Does using the service improve the organisation's outcomes under a specified implementation?
+\end{enumerate}
+A usability study may answer the first. Tests and security review address the second. The third requires organisational data and a design capable of addressing alternative explanations.
+
+A bounded formative evaluation recruits participants who represent relevant tasks and access needs. It measures task completion, error recovery, perceived clarity, and staff burden. It reports who participated, what was simulated, and what was not tested.
+
+\section{Reflection and research contribution}
+The artefact contribution is a tested design and implementation for a bounded rescheduling workflow. A possible empirical contribution would require a separate study. A process contribution might document how domain modelling and interaction evaluation changed the implementation. The team should not call a prototype a validated public-service intervention without evidence of use and outcomes.
+
+\section{Written account and presentation checklist}
+\begin{enumerate}
+\item State the problem and why it is worth addressing.
+\item Explain the boundary and out-of-scope decisions.
+\item Link requirements to models, code, and tests.
+\item Show the request path and transaction invariant.
+\item Demonstrate success and failure paths.
+\item Explain accessibility, privacy, security, and organisational consequences.
+\item State what the evaluation can and cannot establish.
+\end{enumerate}
+
+\section{Summary}
+CivicQueue works as a case because every technical decision is connected to a problem, user, organisation, and claim. The system is not finished when the route returns 200. It is finished for a stated scope when its behaviour, assumptions, risks, evidence, and limitations are understandable.
+
+\begin{keyterms}vertical slice; delimitation; traceability; domain invariant; transaction; active appointment; modular monolith; formative evaluation; fallback; artefact contribution; organisational outcome.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Which requirement is most directly protected by a database uniqueness constraint?}
+\solution{R3, the requirement that a slot cannot be double-booked. The constraint provides protection at the persistence boundary, while the application transaction and user-facing conflict response make the invariant meaningful in the complete system.}
+
+\exercise{Why is the human fallback part of the system rather than a separate service issue?}
+\solution{It affects accessibility, adoption, error recovery, workload, and the consequences of digital failure. Excluding it from the boundary would hide a condition of service use.}
+
+\exercise{What additional evidence would be needed before claiming that CivicQueue reduces missed appointments?}
+\solution{A defined outcome and comparison, data over an appropriate period, an implementation with known adoption, and a design addressing seasonality, staffing, selection, and other changes. A formative usability test alone is insufficient.}

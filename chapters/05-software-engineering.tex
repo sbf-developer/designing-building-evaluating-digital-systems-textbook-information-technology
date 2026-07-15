@@ -1,0 +1,99 @@
+\chapter{Software engineering: from uncertainty to dependable systems}
+\label{ch:software-engineering}
+
+\section{A motivating problem}
+A team can write ten thousand lines of code and still fail to deliver a useful system. Requirements may conflict, the deployment environment may differ from the developer's laptop, and a small change to an appointment rule may break reporting. Software engineering exists because software is a socio-technical product made under constraints, not because programmers need a larger vocabulary for writing code.
+
+\learningobjectives{You should be able to distinguish programming from software engineering; elicit and specify requirements; connect requirements to design, code, and tests; compare lifecycle approaches; reason about quality attributes and technical debt; and use version control and review as engineering practices.}
+
+\section{The five-minute explanation}
+Programming asks how to make a particular computation work. Software engineering asks how a team can repeatedly produce, deploy, operate, and change software while preserving agreed properties. Those properties include correctness, reliability, security, performance, usability, accessibility, maintainability, and compliance. They compete for resources and sometimes conflict.
+
+A requirement is not merely a feature request. It is a statement about a needed capability or constraint in a context. A functional requirement says what the system should do. A non-functional requirement describes a quality, constraint, or condition under which it must do it. A vague requirement such as \enquote{the system should be fast} is not testable until response conditions and a threshold are specified.
+
+\section{The problem is part of the engineering work}
+CivicQueue begins with observations, interviews, existing documents, and operational data. A team should record the source and status of each statement:
+\begin{itemize}
+\item \textbf{Need:} citizens need a way to request a change without a telephone call.
+\item \textbf{Requirement:} an authenticated citizen can request a new slot from the available slots shown for the relevant service.
+\item \textbf{Acceptance criterion:} given a confirmed appointment and an available future slot, when the citizen confirms the change, the old slot is released only if the new reservation succeeds.
+\item \textbf{Assumption:} the external calendar service has the same time-zone definition as CivicQueue.
+\item \textbf{Risk:} a simultaneous request could reserve the same slot twice.
+\end{itemize}
+Traceability links these statements to design decisions, implementation, and tests. It does not make requirements true; it makes missing reasoning easier to discover.
+
+\section{Lifecycle models and their limits}
+A lifecycle model is a coordination model, not a law of nature. A plan-driven process can be appropriate when requirements are stable, change is expensive, and verification must be documented. Incremental development delivers slices that create feedback. Agile methods emphasise working increments, collaboration, and response to change \citep{agilemanifesto2001}. A spiral model organises work around risk and learning \citep{boehm1988spiral}.
+
+The contrast between waterfall and agile is often overstated. Real projects mix discovery, design, implementation, testing, procurement, compliance, and operation. The useful question is which uncertainty should be reduced before commitment and which should be explored through an increment.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=11mm and 13mm, every node/.style={font=\small}, box/.style={draw, rounded corners, fill=pale, minimum width=30mm, minimum height=11mm, align=center}, arr/.style={-{Latex}, thick, blue}]
+\node[box] (discover) {discover\\and frame};
+\node[box,right=of discover] (slice) {vertical\\slice};
+\node[box,right=of slice] (evaluate) {test\\and evaluate};
+\node[box,below=of evaluate] (operate) {deploy\\and observe};
+\node[box,left=of operate] (learn) {learn\\and revise};
+\draw[arr] (discover)--(slice);
+\draw[arr] (slice)--(evaluate);
+\draw[arr] (evaluate)--(operate);
+\draw[arr] (operate)--(learn);
+\draw[arr] (learn)--(discover);
+\end{tikzpicture}
+\caption{An incremental engineering loop that keeps discovery, delivery, and learning connected.}
+\label{fig:engineering-loop}
+\end{figure}
+
+\section{Quality attributes and trade-offs}
+A quality attribute becomes useful when it has a context, a measure, and a threshold. For CivicQueue:
+\begin{itemize}
+\item availability: the service is available during published booking hours;
+\item confidentiality: citizens cannot view another person's case;
+\item response time: the booking confirmation appears within a stated percentile under a stated load;
+\item accessibility: core tasks can be completed with keyboard navigation and assistive technology;
+\item maintainability: domain rules can be changed without editing presentation code.
+\end{itemize}
+These are not independent. Aggressive caching may improve speed but expose stale or private data. Strong verification may slow release but reduce risk. The team should document the trade-off rather than claim that all qualities are maximised.
+
+\section{Version control, review, and integration}
+Git records snapshots of a project and supports branching, comparison, and collaboration. A branch is a coordination mechanism, not a substitute for communication. A useful change has a small scope, a clear message, tests, and a review that examines behaviour and risk. Merging code is easy compared with integrating assumptions.
+
+Continuous integration runs repeatable checks when changes are proposed. A minimal pipeline may format code, run unit tests, run integration tests, build the application, and produce an artefact. Continuous delivery adds a controlled path to deployment. Neither practice guarantees that a requirement is correct or that the system is usable.
+
+\section{Technical debt and maintenance}
+Technical debt is not simply bad code. It is a present choice that creates future cost, risk, or reduced option value. Some debt is deliberate and documented; some is accidental. A team should record why it exists, what interest it incurs, and when it should be repaid. Refactoring changes internal structure while preserving observable behaviour. It is safer when tests describe the behaviour that must remain stable.
+
+\section{Professional responsibility}
+A software engineer is accountable for communicating uncertainty and foreseeable harm. Security, privacy, accessibility, and inclusive design should appear in requirements and tests, not as a final polish step. A team should have an escalation path for unsafe requests, missing consent, data leakage, and conflicts between delivery pressure and professional standards.
+
+\section{Project application}
+A strong project report can include:
+\begin{enumerate}
+\item a problem formulation and stakeholder evidence;
+\item a requirements table with source, priority, and acceptance criteria;
+\item a decision log for architecture and scope;
+\item a traceability matrix from requirement to test;
+\item a delivery history showing iterations and feedback;
+\item a quality and risk assessment;
+\item a reflection on group work and technical debt.
+\end{enumerate}
+When presenting the work, do not turn the process into a success story. Explain a decision that was revised, an assumption that failed, and what evidence caused the change.
+
+\section{Summary and key terms}
+Software engineering coordinates people, models, code, tests, deployment, and maintenance under constraints. Requirements should be traceable and testable. Lifecycle models organise uncertainty but do not remove it. Quality attributes require context and trade-offs. Version control, review, integration, and technical-debt management are mechanisms for preserving reasoning across time.
+
+\begin{keyterms}software engineering; requirement; acceptance criterion; traceability; lifecycle; incremental development; agile; quality attribute; reliability; technical debt; refactoring; version control; continuous integration; deployment.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Turn \enquote{the booking process should be user-friendly} into two testable requirements.}
+\solution{One requirement could be that a first-time user can identify the rescheduling action from the appointment view without help in a defined usability test. Another could be that the rescheduling form can be completed using keyboard navigation and has a programmatically associated error message for each invalid field. The thresholds and study procedure must still be specified.}
+
+\exercise{What is the difference between a feature and an acceptance criterion?}
+\solution{A feature names a capability, such as rescheduling. An acceptance criterion states an observable condition under which a particular behaviour is considered acceptable, including relevant inputs, outputs, and failure handling.}
+
+\exercise{Why is a small vertical slice useful before implementing the whole system?}
+\solution{It exposes integration assumptions among interface, domain logic, persistence, and deployment. A broad component can look complete while the system cannot perform one user-visible task end to end.}
+
+\section{Further reading}
+Software development connects programming to requirements, demonstrable running systems, and explanations of how programs solve problems. Compare the Agile Manifesto with the Scrum Guide \citep{scrumguide2020}, and treat both as historical and practical sources rather than universal laws.

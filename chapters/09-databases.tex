@@ -1,0 +1,91 @@
+\chapter{Databases and durable information}
+\label{ch:databases}
+
+\section{A motivating problem}
+A spreadsheet can record appointments until several people edit it at once. Then duplicates appear, a citizen's status disagrees with the staff calendar, and nobody can explain which value is authoritative. A database is not merely a faster spreadsheet. It is a system for representing, constraining, querying, and updating shared state.
+
+\learningobjectives{You should be able to explain the relational model; design entities, keys, and integrity constraints; use SQL selection, projection, joins, aggregation, subqueries, and views; reason about functional dependencies and normal forms; explain transactions, isolation, locks, indexes, migrations, and database security; and compare relational and non-relational models.}
+
+\section{The five-minute explanation}
+A relation is a set of tuples with attributes. In a table, rows represent tuples and columns represent attributes, but a relational relation is not defined by its visual layout. A key identifies a tuple. A foreign key expresses a relationship between tables. Constraints prevent states that the domain says are invalid.
+
+Codd's relational model separated logical data relationships from physical storage decisions \citep{codd1970relational}. SQL is a declarative language: the query states what result is wanted, while the database chooses an execution plan.
+
+\section{From domain concepts to schema}
+The CivicQueue schema distinguishes:
+\begin{itemize}
+\item \texttt{citizens}, identified by a surrogate identifier and containing minimal contact data;
+\item \texttt{services}, such as benefits advice or permit support;
+\item \texttt{slots}, which represent available service capacity;
+\item \texttt{appointments}, which connect one citizen to one slot;
+\item \texttt{audit\_events}, which record security-relevant changes.
+\end{itemize}
+The schema in \texttt{examples/sql/schema.sql} can be loaded into SQLite. It uses primary keys, foreign keys, a uniqueness constraint, and a check constraint. Constraints are executable domain claims.
+
+\section{Relational operations and SQL}
+Selection filters rows; projection chooses attributes; a join combines related tuples. SQL expresses these operations:
+
+\begin{lstlisting}[language=SQL,caption={A query that joins appointments to citizens and services.}]
+SELECT a.id,
+       c.display_name,
+       s.name AS service_name,
+       sl.starts_at,
+       a.status
+FROM appointments AS a
+JOIN citizens AS c ON c.id = a.citizen_id
+JOIN slots AS sl ON sl.id = a.slot_id
+JOIN services AS s ON s.id = sl.service_id
+WHERE a.status = 'confirmed'
+ORDER BY sl.starts_at;
+\end{lstlisting}
+
+The query names the relationship conditions. An implicit join or a \texttt{SELECT *} can be shorter but may hide assumptions and create unstable interfaces. Use aliases and select the fields the client actually needs.
+
+Aggregation uses functions such as \texttt{COUNT}, \texttt{AVG}, and \texttt{SUM}. \texttt{GROUP BY} changes the unit of analysis. If you count appointments by service, the result is no longer one row per appointment; it is one row per service. State that change explicitly.
+
+\section{Functional dependencies and normalisation}
+A functional dependency $X\rightarrow Y$ means that equal values of attributes $X$ require equal values of attributes $Y$ in the relation. If \texttt{service\_id} determines \texttt{service\_name}, storing both repeatedly in an appointment table creates update anomalies:
+\begin{itemize}
+\item update anomaly: renaming a service requires many edits;
+\item insertion anomaly: a service cannot be stored without an appointment;
+\item deletion anomaly: deleting the last appointment removes the service description.
+\end{itemize}
+Normalisation decomposes relations to reduce such anomalies while preserving dependencies and joinability. First, second, third normal form, and BCNF are conditions with different strengths. They are not a ritual of splitting every table. Denormalisation can be justified for measured read performance, reporting, or integration, but its duplicated facts need a consistency strategy.
+
+\section{Transactions and ACID}
+A transaction groups operations so that the database enforces a defined unit of change. ACID abbreviates atomicity, consistency, isolation, and durability. The terms do not mean that every transaction is globally correct: consistency depends on constraints and application rules; isolation has levels and trade-offs.
+
+For rescheduling, one transaction may check the new slot, insert a new appointment, cancel or release the old slot, and write an audit event. If any required step fails, the transaction should roll back. Two concurrent transactions can still conflict unless the database and application use an appropriate constraint or locking strategy.
+
+\section{Isolation and concurrency}
+At lower isolation, transactions may see phenomena such as dirty reads, non-repeatable reads, or phantoms. At higher isolation, the database may block or abort more work. A unique constraint on an active slot can be safer than a check-then-insert sequence because the database arbitrates the race. Retry logic must distinguish transient serialization failures from permanent validation errors.
+
+\section{Indexes and query plans}
+An index is an auxiliary structure that can reduce search work at the cost of storage and write overhead. Index columns used in filters, joins, and ordering when measurement supports it. An index on a low-selectivity column may offer little benefit. Inspect query plans and benchmark representative data. Indexes do not fix an incorrect query or a missing authorisation condition.
+
+\section{Migrations, backups, and security}
+A migration changes schema in a controlled, versioned step. Backups should be encrypted, tested by restoration, and governed by retention rules. Use parameterised queries; never concatenate user input into SQL. Limit database credentials by environment and privilege. Logs can themselves contain personal data and require access control and retention decisions.
+
+\section{NoSQL and polyglot persistence}
+Document stores, key-value stores, graph databases, and wide-column systems optimise different access patterns and consistency models. A document model can be convenient for nested data, a graph model for relationship traversal, and a key-value store for predictable lookups. The choice should follow data shape, query patterns, consistency, transaction scope, operations, and team capability. \enquote{NoSQL} is not one model and does not automatically scale better.
+
+\section{Project application}
+Include an ER or relational design, functional dependencies, constraints, representative queries, transaction boundaries, indexes with evidence, migration strategy, and security analysis. When presenting the work, explain what anomaly the normalisation choice prevents and what trade-off a denormalised read model would introduce.
+
+\section{Summary and key terms}
+Databases make shared state durable and constrain its structure. The relational model supports declarative queries and integrity constraints. Normalisation is about dependencies and anomalies. Transactions coordinate changes; isolation manages concurrency trade-offs. Indexes, migrations, backups, parameterised queries, and access control are engineering parts of data management.
+
+\begin{keyterms}relation; tuple; attribute; key; foreign key; constraint; join; aggregation; functional dependency; normalisation; denormalisation; transaction; ACID; isolation; lock; index; query plan; migration; backup; NoSQL.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Why is a citizen's display name usually not a fact that should be copied into every appointment row?}
+\solution{The citizen identifier determines the current identity record, while repeated display names can become inconsistent after a correction. A report may intentionally snapshot a historical name, but then the snapshot is a different documented fact with a retention and audit rationale.}
+
+\exercise{What can go wrong with a check-then-insert reservation sequence?}
+\solution{Two concurrent transactions can both observe the slot as available and then both insert. A database uniqueness constraint, appropriate transaction isolation, or an atomic reservation operation is needed to make the invariant hold under concurrency.}
+
+\exercise{When can denormalisation be justified?}
+\solution{When a measured access pattern needs faster reads or simpler analytical queries, and the duplication has an explicit update, reconciliation, and testing strategy. It should be a response to a stated constraint, not an assumption that joins are always bad.}
+
+\section{Further reading}
+For foundations, read \citet{garciamolina2008database} and \citet{date2003introduction}. PostgreSQL's documentation is a practical reference for a production relational system \citep{postgresdocs}; the example project uses SQLite to keep setup small.

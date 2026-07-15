@@ -1,0 +1,66 @@
+\chapter{Human-centred artificial intelligence}
+\label{ch:ai}
+
+\section{A motivating problem}
+A municipality considers an AI assistant that predicts which appointment reminders need personal follow-up. The model is accurate on a validation set, but staff do not know when to trust it, citizens cannot challenge a classification, and the training data reflects unequal historical contact. The central design question is not whether the model is intelligent. It is whether the complete human--AI system supports a legitimate purpose with calibrated uncertainty, human control, and accountable failure recovery.
+
+\learningobjectives{You should be able to explain supervised and unsupervised learning, training/validation/test separation, neural networks, language models, probabilistic outputs, uncertainty, explainability, bias, fairness, privacy, human-in-the-loop interaction, evaluation, and relevant European regulation; and distinguish model performance from system-level benefit.}
+
+\section{The five-minute explanation}
+Machine learning estimates patterns from data rather than receiving every rule explicitly. In supervised learning, examples have target labels. In unsupervised learning, the system searches for structure without a supplied target. A model can be useful for prediction without representing a causal mechanism or possessing human understanding.
+
+The training set is used to fit parameters. Validation data supports model or design choices. A held-out test set estimates performance after those choices. Reusing test data for tuning makes the estimate optimistic. A deployment setting may differ from all three.
+
+\section{A small mathematical model}
+A classifier maps an input vector $x$ to a predicted label or probability. Logistic regression can represent
+\[
+p(y=1\mid x)=\sigma(w^\top x+b), \qquad
+\sigma(z)=\frac{1}{1+e^{-z}},
+\]
+where $x$ is a vector of features, $w$ a vector of learned weights, $b$ an intercept, and $\sigma$ maps a real score to a number between 0 and 1. The value is a model output under its training and calibration assumptions, not an intrinsic probability that the individual truly belongs to a category.
+
+A neural network composes parameterised functions. Training typically minimises a loss over examples using an optimisation algorithm. The resulting parameters can fit patterns, exploit shortcuts, or encode artefacts of the data.
+
+\section{Neural networks and language models}
+A large language model predicts tokens in context. Transformer architectures use attention mechanisms to combine information across a sequence \citep{vaswani2017attention}. Scale and training data can produce broad capabilities, but fluent output is not proof of truth, grounded reasoning, or stable intention. The system generates likely continuations conditioned on input and internal parameters.
+
+Generative models can hallucinate, reproduce sensitive data, amplify stereotypes, and fail under distribution shift. Their usefulness depends on the surrounding workflow: grounding, verification, access controls, user interface, monitoring, and a human decision process.
+
+\section{Uncertainty and calibration}
+If a model outputs 0.8 for many cases, calibration asks whether about 80 percent of such cases have the target outcome under the evaluation distribution. Accuracy and calibration are different. Uncertainty can arise from noisy data, limited coverage, ambiguity, distribution shift, or model instability. A confidence score is not automatically calibrated uncertainty.
+
+A human-centred interface should show what the output means, what data it used where appropriate, what it does not know, how to correct it, and what happens when it fails. Explanations can support debugging or user control without providing a true mechanistic account of the model.
+
+\section{Human-in-the-loop systems}
+A human-in-the-loop may approve, correct, contextualise, contest, or override a model. Adding a human does not automatically make a system safe. Automation bias can lead people to accept recommendations without scrutiny; alert fatigue can make them ignore everything. Design the task, authority, workload, evidence display, escalation path, and audit trail together.
+
+Evaluate the combined system. Relevant measures include model discrimination and calibration, human decision quality, time, workload, disagreement patterns, appeal outcomes, subgroup performance, and consequences of error.
+
+\section{Bias and fairness}
+Bias can enter through historical labels, sampling, measurement, missingness, proxy variables, deployment, or feedback loops. Fairness criteria can conflict when base rates differ and decisions are imperfect. A single fairness metric cannot settle a normative question. State the protected groups, decision context, harms, threshold, and trade-offs.
+
+Privacy includes training data, prompts, outputs, logs, model updates, and third-party processing. Data minimisation and purpose limitation remain relevant. A model card or data documentation can make intended use, limitations, evaluation data, and risks inspectable \citep{bender2021stochastic,mitchell2019model}.
+
+\section{European regulation and responsibility}
+The EU Artificial Intelligence Act establishes harmonised rules using a risk-based framework; its application depends on system role, provider/deployer obligations, and the law's implementation timeline \citep{euaiact2024}. The regulation does not replace technical risk analysis, professional judgment, or rights-based evaluation. The GDPR may also apply to personal data \citep{gdpr2016}.
+
+\section{Project application}
+Define the human task before choosing a model. Specify the data-generating process, split strategy, baseline, metrics, subgroup analysis, uncertainty, interface, human override, logging, and failure recovery. When presenting the work, explain what the model cannot establish and why a simpler rule, search system, or non-AI workflow might be preferable.
+
+\section{Summary and key terms}
+AI systems estimate patterns under data and modelling assumptions. Training, validation, and test data must remain conceptually separate. Probabilistic outputs require calibration and interpretation. Human-in-the-loop design can fail through automation bias or weak authority. Fairness, privacy, contestability, and regulation concern the complete sociotechnical system, not only the model.
+
+\begin{keyterms}artificial intelligence; machine learning; supervised learning; unsupervised learning; neural network; language model; token; training; validation; test set; calibration; uncertainty; explainability; interpretability; human-in-the-loop; automation bias; fairness; distribution shift; model card; AI Act.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Why is a high test accuracy insufficient for deploying an AI appointment assistant?}
+\solution{The test distribution may not match deployment; errors may be unevenly distributed; the output may be poorly calibrated; the task may have asymmetric harms; staff may misuse the prediction; and citizens may lack contestability. System evaluation must include human and organisational outcomes.}
+
+\exercise{What is data leakage in model evaluation?}
+\solution{It occurs when information unavailable at prediction time, or information influenced by the target or test outcome, enters training or feature construction. It can produce unrealistically strong performance. The data-generation timeline must be examined.}
+
+\exercise{Give one appropriate human-control mechanism.}
+\solution{A staff member may see the model's recommendation, supporting evidence and uncertainty, choose an action, record a reason for overriding, and route contested cases to a human review process. Whether this is adequate depends on workload, authority, and error consequences.}
+
+\section{Further reading}
+Human-centred AI connects interaction, classification, model development, evaluation, trust, fairness, explainability, and societal implications. For foundations, see \citet{russell2021artificial}, \citet{bishop2006pattern}, and \citet{goodfellow2016deep}; for human--AI interaction, see \citet{amershi2019guidelines}.

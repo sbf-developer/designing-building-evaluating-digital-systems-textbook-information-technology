@@ -1,0 +1,99 @@
+\chapter{Object-oriented and domain design}
+\label{ch:oop}
+
+\section{A motivating problem}
+CivicQueue contains appointments, citizens, service types, slots, notifications, and staff actions. If the system stores everything as unrelated dictionaries, rules become scattered and inconsistent. If it creates a large hierarchy of classes, a small policy change can require changes across the entire program. Object-oriented design is a set of modelling and programming techniques for managing such complexity, not a command to turn every noun into a class.
+
+\learningobjectives{You should be able to explain objects, identity, state, behaviour, encapsulation, interfaces, composition, inheritance, polymorphism, cohesion, coupling, dependency inversion, immutability, and testability; compare object-oriented design with procedural, functional, data-oriented, and component-based approaches; and refactor a domain model.}
+
+\section{The five-minute explanation}
+An object combines identity, state, and behaviour. A class is one way to define a family of objects. Encapsulation means that clients depend on a controlled interface rather than directly changing internal representation. An invariant is a condition the object promises to preserve.
+
+For an appointment, the rule \enquote{a cancelled appointment cannot be completed} belongs close to the state it protects. This does not mean the object should contain database access, HTML rendering, and email delivery. Good design separates responsibilities while keeping domain rules explicit.
+
+\section{A small domain model}
+The following example uses Python dataclasses. It is intentionally incomplete; a production model would need time zones, identifiers, authorisation, persistence, and concurrency control.
+
+\begin{lstlisting}[language=Python,caption={A domain object with an explicit state invariant.}]
+from dataclasses import dataclass
+from enum import Enum
+
+class Status(Enum):
+    REQUESTED = "requested"
+    CONFIRMED = "confirmed"
+    CANCELLED = "cancelled"
+    COMPLETED = "completed"
+
+@dataclass
+class Appointment:
+    identifier: int
+    status: Status = Status.REQUESTED
+
+    def confirm(self) -> None:
+        if self.status is not Status.REQUESTED:
+            raise ValueError("only requested appointments can be confirmed")
+        self.status = Status.CONFIRMED
+
+    def cancel(self) -> None:
+        if self.status in {Status.CANCELLED, Status.COMPLETED}:
+            raise ValueError("appointment cannot be cancelled")
+        self.status = Status.CANCELLED
+
+    def complete(self) -> None:
+        if self.status is not Status.CONFIRMED:
+            raise ValueError("only confirmed appointments can be completed")
+        self.status = Status.COMPLETED
+\end{lstlisting}
+
+The methods define allowed transitions. The class does not know how the object is stored or displayed. This separation makes unit tests cheap and reduces coupling.
+
+\section{Composition, inheritance, and polymorphism}
+Composition builds an object from collaborating objects. Inheritance creates a subtype relation and can support substitutability, but it also couples subclasses to superclass decisions. Prefer composition when the relationship is \enquote{has a} or when behaviour should be selected at runtime. Use inheritance when a stable substitutable abstraction is genuinely present.
+
+Polymorphism means that code can use a common interface while the concrete behaviour varies. In Python, protocols and duck typing can express this without a class hierarchy. A notification service might accept any object with a \texttt{send} method. The abstraction should be defined by the responsibility the caller needs, not by a taxonomy of vendors.
+
+\section{SOLID principles as questions}
+SOLID principles are heuristics, not proof rules:
+\begin{description}
+\item[Single responsibility] Which reason for change does this module own?
+\item[Open--closed] Can a new variant be added without editing stable code?
+\item[Liskov substitution] Does a subtype preserve the promises clients rely on?
+\item[Interface segregation] Are clients forced to depend on operations they do not use?
+\item[Dependency inversion] Does high-level policy depend on abstractions rather than infrastructure details?
+\end{description}
+Applying a principle mechanically can produce needless indirection. A small program may be clearer with a function than with five interfaces.
+
+\section{Cohesion, coupling, and immutability}
+Cohesion asks whether the responsibilities in a module belong together. Coupling asks how much one module knows about another. Immutability reduces the number of possible state histories. A value object such as a \texttt{SlotId} or a date range can be immutable and validated at construction. Mutable aggregate objects require stronger invariants and careful ownership.
+
+\section{Patterns and their forces}
+A design pattern describes a recurring problem, the forces that shape it, a structure, and consequences. The Repository pattern can separate domain code from persistence; Dependency Injection can make infrastructure replaceable in tests; Adapter can translate an external API; Strategy can select an algorithm; Observer can notify dependants about an event. MVC separates concerns in interactive applications, but the boundaries depend on the framework and can become confused.
+
+The common misuse is pattern naming without problem analysis. Ask what change or force the pattern addresses, what complexity it introduces, and whether a simpler function or module would be better. The original catalogue remains useful as a language for design discussion \citep{gamma1994design}.
+
+\section{Alternatives to object orientation}
+Procedural decomposition can be clearer for transformations. Functional programming emphasises pure functions and immutable data. Data-oriented design organises around memory layout and operations over data. Component-based design composes independently deployable or replaceable parts. A realistic system often combines all four. The criterion is clarity of invariants and change boundaries, not ideological consistency.
+
+\section{Testing and refactoring}
+Test domain objects through public behaviour. Test an invariant's boundary cases, not just the happy path. Refactor after a test suite gives a safety net. If a class requires a database, clock, network, and global configuration to construct, the design is telling you that responsibilities are mixed or dependencies are hidden.
+
+\section{Project application}
+When documenting the work, include a domain model and explain which concepts are entities, value objects, services, or external systems. Show one design alternative you rejected and the force that made it less suitable. When presenting it, explain why a domain rule lives where it does and how the design would change if a second notification channel were added.
+
+\section{Summary and key terms}
+Objects protect state and expose behaviour through interfaces. Composition is often safer than inheritance for reuse. Polymorphism supports substitutable variation. SOLID principles are questions about change, substitution, and dependency, not automatic templates. Patterns are named responses to forces. Procedural, functional, data-oriented, and component-based designs remain legitimate alternatives.
+
+\begin{keyterms}object; identity; state; behaviour; class; instance; encapsulation; abstraction; interface; composition; inheritance; polymorphism; dynamic dispatch; cohesion; coupling; immutability; dependency inversion; design pattern.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Why should an appointment object reject an invalid transition rather than let any caller assign its status?}
+\solution{If callers can assign arbitrary status values, the invariant is distributed across every caller and can be violated by omission. A method or validated state transition centralises the rule. The object still needs integration tests and authorisation at a higher level; encapsulation does not solve every concern.}
+
+\exercise{Give one reason to prefer composition over inheritance for notifications.}
+\solution{A service may need to send through email, SMS, or a queue depending on configuration. Composing an appointment service with a notification interface allows the strategy to change without making \texttt{EmailNotification} and \texttt{SmsNotification} subclasses of an artificial common object.}
+
+\exercise{When can a design pattern make a project worse?}
+\solution{It can add indirection, obscure a simple control flow, create more classes to maintain, or imply a fixed structure when the forces are not present. The pattern should earn its complexity by addressing a real change or coordination problem.}
+
+\section{Further reading}
+Use access, encapsulation, resource management, and security as questions for analysing a design. Compare the patterns catalogue \citep{gamma1994design} with the enterprise patterns in \citet{fowler2002patterns}.

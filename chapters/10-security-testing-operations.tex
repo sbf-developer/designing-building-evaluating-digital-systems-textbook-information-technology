@@ -1,0 +1,75 @@
+\chapter{Security, testing, and operations}
+\label{ch:operations}
+
+\section{A motivating problem}
+A prototype can pass its demo while exposing appointments through predictable URLs, logging personal data, accepting forged requests, and failing silently when an email provider is unavailable. Security and operations are not separate from development; they describe what the system must preserve in an adversarial and changing environment.
+
+\learningobjectives{You should be able to threat-model an application; distinguish authentication, authorisation, confidentiality, integrity, and availability; recognise common web vulnerabilities; design layered tests and CI checks; and explain logging, metrics, tracing, deployment, incident response, and recovery.}
+
+\section{The five-minute explanation}
+Security is the reduction of unacceptable risk to assets under threats and constraints. A threat model identifies assets, actors, trust boundaries, possible abuse paths, and mitigations. It is not a promise that no attack can succeed. Operations asks whether the system can be observed, changed, recovered, and governed after deployment.
+
+\section{Threat modelling CivicQueue}
+Assets include appointment confidentiality, slot integrity, citizen contact data, staff accounts, audit records, and service availability. Threats include account takeover, insecure direct object references, SQL injection, cross-site scripting, cross-site request forgery, malicious file input, notification abuse, and denial of service. Draw trust boundaries between browser, application, database, identity provider, and notification service.
+
+For each risk, record:
+\begin{enumerate}
+\item asset and harm;
+\item attacker capability and precondition;
+\item likelihood and impact rationale;
+\item preventive and detective controls;
+\item residual risk and owner.
+\end{enumerate}
+OWASP's Top 10 provides a vocabulary for common application risks, while NIST's Secure Software Development Framework connects security practices to the development lifecycle \citep{owasptop10,nistssdf}.
+
+\section{Secure defaults}
+Use parameterised SQL, output encoding, server-side authorisation, secure cookie attributes, CSRF protection for state-changing browser requests, password hashing through a vetted library, TLS, rate limits, dependency updates, and least-privilege credentials. Do not invent cryptography. Do not log passwords, access tokens, or unnecessary personal data. Return generic errors to untrusted callers while preserving useful internal diagnostics.
+
+Security controls can create usability costs. A short session timeout may reduce risk but create barriers for users with cognitive or motor impairments. The trade-off should be evaluated and supported by recovery paths.
+
+\section{Testing as layered evidence}
+A testing strategy has layers:
+\begin{description}
+\item[Unit] Does one function or domain object satisfy its contract?
+\item[Integration] Do components interact correctly with a real or controlled database and external boundary?
+\item[System] Does the deployed application perform a complete user task?
+\item[Property and invariant] Does a rule hold across generated inputs?
+\item[Security] Can an unauthorised actor violate confidentiality or integrity?
+\item[Usability and accessibility] Can intended users complete tasks and recover from errors?
+\end{description}
+A high percentage of unit coverage does not imply high system quality. Tests should be selected from risks and requirements, not from a desire to maximise a single number.
+
+\section{Continuous integration and delivery}
+A CI pipeline should fail clearly and reproducibly. Typical steps are dependency installation from a lock or constrained file, linting, type checks, unit tests, integration tests, security checks, packaging, and build verification. A deployment pipeline promotes an immutable artefact through environments with approvals appropriate to risk. Database migrations and rollback plans belong in the release design.
+
+\section{Observability and reliability}
+Logs record events; metrics aggregate measurements; traces follow a request across components. Use correlation identifiers rather than personal identifiers where possible. Define service-level indicators such as successful booking rate and latency. An alert should have an owner and an action, not merely report that a graph changed.
+
+Reliability includes failure handling: timeouts, retries with backoff, idempotency keys, circuit breakers, graceful degradation, backup restoration, and incident review. Retrying a non-idempotent reservation can create duplicates. Make the operation's semantics explicit.
+
+\section{Performance and capacity}
+Capacity planning estimates demand and resource limits. A queue, database connection pool, and notification provider can each become the bottleneck. Load tests should use representative traffic and safe data. Report uncertainty and environmental limits. Do not interpret a local benchmark as a guarantee about production.
+
+\section{Accessibility and privacy in operation}
+Accessibility is not finished at the interface layer if an outage removes the only accessible route. Privacy includes logs, backups, analytics, monitoring, support access, and data deletion. Data retention should be justified by purpose and legal context. A system that is secure from attackers but unusable by the intended population has failed a central requirement.
+
+\section{Project application}
+Include a threat model, test strategy, CI evidence, deployment diagram, operational assumptions, and recovery scenario. Demonstrate one failure intentionally: disconnect the database, submit an invalid transition, or replay a request. When documenting the work, distinguish a vulnerability you mitigated from a risk you merely documented.
+
+\section{Summary and key terms}
+Security and operations extend engineering beyond the happy path. Threat modelling connects assets to risks and controls. Authentication is not authorisation. Layered tests provide different evidence. Observability, reliability, deployment, backup, and recovery are design concerns. Privacy and accessibility continue through logs and operations.
+
+\begin{keyterms}threat model; asset; trust boundary; authentication; authorisation; confidentiality; integrity; availability; SQL injection; XSS; CSRF; least privilege; unit test; integration test; CI/CD; observability; log; metric; trace; idempotency; incident response.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{A request to cancel an appointment is retried after a timeout. What should the design consider?}
+\solution{The server may have completed the first request even though the client did not receive the response. The operation should be idempotent or use an idempotency key so that a retry does not create a second effect. The response should represent the current state consistently.}
+
+\exercise{Why is \enquote{we use HTTPS} not a complete security argument?}
+\solution{HTTPS protects transport under its assumptions, but it does not prevent broken authorisation, injection, insecure cookies, weak passwords, malicious application logic, leaked secrets, or harmful logging. Security is a set of controls across the system.}
+
+\exercise{Give one example of an operational metric that is not merely server CPU.}
+\solution{The proportion of successful booking attempts, the p95 confirmation latency, notification delivery failure rate, or the number of unauthorised access attempts may be more directly connected to user and security outcomes than CPU alone.}
+
+\section{Further reading}
+Use OWASP's Top 10 and Application Security Verification Standard as practical starting points \citep{owasptop10}; use NIST SP 800-218 for secure development practices \citep{nistssdf}. Reliability concepts should be connected to the system's actual failure modes rather than copied as a checklist.

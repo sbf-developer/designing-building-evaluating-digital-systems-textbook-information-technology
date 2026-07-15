@@ -1,0 +1,95 @@
+\chapter{Systems analysis and modelling}
+\label{ch:modelling}
+
+\section{A motivating problem}
+A team says that CivicQueue needs \enquote{a calendar integration}. One person imagines a public booking calendar; another imagines a staff scheduling service; a third imagines a synchronisation job. The sentence is too compressed to coordinate design. A model externalises the assumptions so that people can inspect, question, and revise them.
+
+\learningobjectives{You should be able to use models to analyse and communicate systems; define boundaries, actors, responsibilities, events, interfaces, and contracts; choose appropriate UML diagrams; explain design patterns as responses to forces; and assess model--code consistency.}
+
+\section{The five-minute explanation}
+A model is a selective representation made for a purpose. A use-case model helps discuss goals and actors. A class model describes concepts and relationships. A sequence model describes an interaction over time. A state machine describes legal transitions. A component model describes replaceable units and dependencies. No diagram is the system itself.
+
+\plainlanguage{A diagram is valuable when it lets a team notice, remember, or negotiate something that would otherwise remain hidden. It is harmful when its symbols create a false sense of precision.}
+
+\section{Problem and application domains}
+The problem domain contains the situation the system is meant to address: appointments, citizens, staff work, and rules. The application domain contains the technical artefact and its interfaces. A good model relates the two without assuming that a software class is identical to a real-world institution.
+
+Define the system boundary before drawing. List actors by the goals they pursue, not merely by the screens they use. An external identity provider may be an actor in a system interaction even when no human directly sees it.
+
+\section{Use cases and requirements}
+A use case describes a goal-oriented interaction. \enquote{Reschedule appointment} is a goal; \enquote{click button} is an interaction step. A use-case narrative should include preconditions, trigger, main success scenario, alternatives, failure conditions, and postconditions.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=10mm and 20mm, every node/.style={font=\small}, actor/.style={draw, circle, minimum size=9mm}, use/.style={draw, ellipse, fill=pale, minimum width=36mm, minimum height=10mm}, boundary/.style={draw, rounded corners, dashed, inner sep=8mm}]
+\node[actor] (citizen) {C};
+\node[use,right=of citizen] (reschedule) {Reschedule appointment};
+\node[use,below=of reschedule] (view) {View available slots};
+\node[actor,right=of reschedule] (identity) {I};
+\node[boundary,fit=(reschedule)(view),label=above:CivicQueue] (system) {};
+\draw (citizen)--(reschedule);
+\draw (citizen)--(view);
+\draw (identity)--(reschedule);
+\end{tikzpicture}
+\caption{A use-case boundary with a citizen actor and an external identity service.}
+\label{fig:usecase}
+\end{figure}
+
+The abbreviations C and I are explained in the caption or surrounding text. Avoid relying on a visual legend alone.
+
+\section{Class and domain models}
+A class diagram can show entities, value objects, associations, multiplicities, and responsibilities. It should distinguish an appointment from an appointment slot: one is a booked occurrence; the other is an available capacity at a time and service location. If a rescheduling operation creates a new appointment, the model should make that identity decision visible.
+
+A domain model is not a database schema. It may contain concepts that are derived, transient, or intentionally absent from persistence. Conversely, a database may contain technical fields such as audit timestamps and indexes that do not belong in the domain vocabulary.
+
+\section{Behavioural models}
+A sequence diagram shows messages between participants:
+\begin{enumerate}
+\item the citizen submits a rescheduling request;
+\item the interface sends an HTTP request;
+\item the application authorises the action;
+\item the domain service checks the state transition;
+\item the repository performs a transaction;
+\item the response reports success or a conflict;
+\item the interface gives feedback.
+\end{enumerate}
+A state machine models legal histories. An activity diagram models control and responsibility. Use the smallest model that answers the question being asked.
+
+\section{Contracts}
+A contract specifies an interface's preconditions, postconditions, and invariants. For a slot-reservation operation:
+\begin{itemize}
+\item precondition: the caller is authorised and the slot is available;
+\item postcondition on success: exactly one reservation owns the slot;
+\item postcondition on conflict: the slot ownership is unchanged;
+\item invariant: one slot cannot have two active reservations.
+\end{itemize}
+Contracts expose concurrency requirements that a class diagram alone may hide.
+
+\section{Architecture and patterns}
+At a high level, CivicQueue can be separated into presentation, application services, domain logic, persistence, and external adapters. MVC can help organise a web interface. Repository hides persistence details. Adapter isolates a calendar provider. Dependency Injection makes the application service testable. Observer may model notifications, but asynchronous delivery introduces retries and duplicate-event concerns.
+
+Patterns are not decorations. For each pattern, state the problem, forces, structure, consequences, alternatives, and misuse. A repository is not automatically better than a direct query; it is useful when the persistence boundary is meaningful and stable.
+
+\section{Model--code consistency}
+Models decay when code changes without updating them, but freezing every diagram can slow development. Keep diagrams that support decisions, onboarding, safety, or communication. Link them to code modules and tests. Delete a diagram when it no longer represents a decision that anyone uses.
+
+\section{Project application}
+Choose one diagram per question. Include a system boundary early, a domain model before implementation, and a sequence or state model for the most failure-prone interaction. When documenting the work, explain abstraction choices and inconsistencies. When presenting it, be prepared to redraw the model when someone changes an actor, permission, or failure condition.
+
+\section{Summary and key terms}
+Modelling is a way of thinking and coordinating, not diagram production. Different diagrams answer different questions. Boundaries, actors, responsibilities, events, interfaces, contracts, and invariants connect problem analysis to implementation. Patterns are justified by forces and consequences. Models should be maintained selectively and honestly.
+
+\begin{keyterms}model; system boundary; actor; use case; domain model; UML; class diagram; sequence diagram; state machine; activity; component; deployment; interface; contract; precondition; postcondition; design pattern; architecture.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Why is \enquote{calendar integration} a poor requirement? Rewrite it as a use-case goal and one acceptance criterion.}
+\solution{It names a technical solution without a user goal or boundary. A goal is \enquote{a staff member can publish available appointment slots from the authoritative schedule}. An acceptance criterion could state that a published slot is shown with the correct service, time zone, and availability, and that a failed synchronisation leaves the previous published state visible with an error recorded.}
+
+\exercise{Which diagram is most useful for showing that a cancelled appointment cannot be completed?}
+\solution{A state-machine diagram directly represents legal transitions. A class diagram may show a status attribute, and a sequence diagram may show one scenario, but neither alone states all allowed histories as clearly.}
+
+\exercise{What makes a diagram misleading?}
+\solution{Ambiguous names, hidden boundaries, missing failure paths, inconsistent notation, false precision, and an outdated relationship to code can all mislead. A diagram should state its purpose and scope.}
+
+\section{Further reading}
+The UML specification provides a standard notation \citep{omg2017uml}. This book treats modelling as a means of reasoning rather than a compliance exercise.

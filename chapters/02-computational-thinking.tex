@@ -1,0 +1,133 @@
+\chapter{Computational thinking, models, and simulations}
+\label{ch:computational-thinking}
+
+\section{A motivating problem}
+A city planner asks whether a change in housing allocation could reduce residential segregation. A programmer suggests a simulation in which agents move when too few neighbours are similar to them. The model is simple and often surprising: modest individual preferences can produce large-scale separation. But what exactly does the simulation show? It shows what follows from the rules of that model under its assumptions. It does not, by itself, estimate the effect of a real housing policy.
+
+This chapter develops the habits needed to formulate problems computationally without confusing a model with reality. The same habits support web applications, algorithms, databases, and empirical research.
+
+\learningobjectives{You should be able to decompose a problem, identify abstractions and state variables, describe deterministic and stochastic transitions, implement a reproducible agent-based simulation, distinguish verification from validation, and discuss sensitivity and model limitations.}
+
+\section{The five-minute explanation}
+Computational thinking is a family of problem-solving practices: decomposition, abstraction, representation, algorithm design, automation, and evaluation. It is not the claim that every problem should be reduced to code. It is a disciplined way to ask which parts of a problem can be represented by rules and which parts remain uncertain, normative, or outside the model.
+
+\plainlanguage{A model is a deliberately simplified answer to the question \enquote{what features do we need to keep in order to study this behaviour?} Removing detail can make a model usable, but every removal is an assumption.}
+
+\section{Decomposition and representation}
+Suppose CivicQueue must support rescheduling. Decompose it into smaller questions:
+\begin{enumerate}
+\item What counts as an appointment?
+\item Which states can an appointment have?
+\item Who may request a change?
+\item Which time slots are available?
+\item What happens when two requests arrive together?
+\item Which systems and people must be notified?
+\end{enumerate}
+This decomposition creates representations: a state machine, a data model, access-control rules, and a sequence of interactions. Different representations make different errors easy to see.
+
+\section{State and transition systems}
+Let $X$ be a set of states and $A$ a set of actions. A deterministic transition function is
+\[
+T:X\times A\rightarrow X.
+\]
+The notation says that, for a current state $x\in X$ and an action $a\in A$, the system produces one next state $T(x,a)$. If an action is not allowed, the transition is undefined or produces an error state. A stochastic transition can instead be written as a probability distribution $P(x'\mid x,a)$ over possible next states.
+
+For an appointment, let $X=\{\text{requested},\text{confirmed},\text{cancelled},\text{completed}\}$. An invariant might be that a cancelled appointment cannot become completed without a new appointment being created. The invariant is a claim about all allowed transitions, not merely an example trace.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=25mm, every node/.style={font=\small}, state/.style={draw, rounded corners, fill=pale, minimum width=27mm, minimum height=10mm}, arr/.style={-{Latex}, thick, blue}]
+\node[state] (requested) {requested};
+\node[state,right=of requested] (confirmed) {confirmed};
+\node[state,below=of confirmed] (completed) {completed};
+\node[state,below=of requested] (cancelled) {cancelled};
+\draw[arr] (requested)--node[above]{approve}(confirmed);
+\draw[arr] (confirmed)--node[right]{attend}(completed);
+\draw[arr] (requested)--node[left]{withdraw}(cancelled);
+\draw[arr] (confirmed)--node[below]{cancel}(cancelled);
+\end{tikzpicture}
+\caption{A small appointment state machine. An omitted transition is not automatically permitted.}
+\label{fig:appointment-state}
+\end{figure}
+
+\section{Agent-based models}
+In an agent-based model, individual entities follow local rules while a simulation records the resulting system-level pattern. A minimal segregation model places agents on a grid. Each agent has a type, a neighbourhood, and a tolerance threshold. At each step, an unhappy agent moves to an empty location where its local condition is satisfied.
+
+The model's main variables are:
+\begin{itemize}
+\item grid size and occupancy;
+\item agent types;
+\item neighbourhood definition;
+\item tolerance threshold;
+\item update order;
+\item random seed;
+\item stopping rule.
+\end{itemize}
+
+Changing any one can change the result. A random seed makes one run reproducible; it does not make a random process deterministic in the world.
+
+The implementation in \texttt{examples/simulation/segregation.py} uses only the Python standard library. It returns a result object rather than printing from the model, which makes it easier to test and reuse.
+
+\begin{lstlisting}[language=Python,caption={A small transition rule from the simulation.}]
+def is_happy(grid, row, col, tolerance):
+    """Return whether the occupied cell satisfies its local rule."""
+    agent = grid[row][col]
+    if agent is None:
+        return True
+    neighbours = neighbours_of(grid, row, col)
+    occupied = [item for item in neighbours if item is not None]
+    if not occupied:
+        return True
+    similar = sum(item == agent for item in occupied)
+    return similar / len(occupied) >= tolerance
+\end{lstlisting}
+
+The function does not claim that similarity is a complete description of social satisfaction. It is a formalisation chosen for a particular experiment.
+
+\section{Verification, validation, and sensitivity}
+\term{Verification} asks whether the implementation follows the specified model. Tests can check that an empty neighbourhood makes an agent happy, that no agent moves when all agents are happy, and that the same seed produces the same trace. \term{Validation} asks whether the model is an adequate representation for a purpose. That requires substantive argument and possibly comparison with data or expert knowledge.
+
+For a parameter $\theta$, a sensitivity analysis examines how an outcome $Y$ changes when $\theta$ changes. A simple finite-difference measure is
+\[
+\Delta Y = Y(\theta+\delta)-Y(\theta),
+\]
+where $\delta$ is a specified change. The quantity is meaningful only when the outcome, parameter range, randomisation procedure, and comparison are stated. If results change dramatically under plausible values, conclusions should be conditional rather than absolute.
+
+\warningbox{A simulation can be internally correct and externally irrelevant. A realistic-looking animation is not evidence of validation. State the target phenomenon, the purpose of the model, and the assumptions that connect the model to that phenomenon.}
+
+\section{Other computational models}
+Conway's Game of Life uses a local rule on a grid and demonstrates emergence: global patterns arise from repeated local transitions. Flocking models represent agents with rules for separation, alignment, and cohesion. Epidemic models represent contact and transmission. Network diffusion represents entities as nodes and relations as edges. Schelling-style models represent local preferences and movement. These examples teach formalisation and emergent behaviour, but they should not be presented as direct explanations of human society.
+
+\section{Parameters and experimental design}
+An experiment is easier to interpret when it changes one planned factor at a time or uses a documented factorial design. Record:
+\begin{enumerate}
+\item the research or modelling question;
+\item the outcome measure and its units;
+\item parameter values and ranges;
+\item number of replications;
+\item random seeds;
+\item software version and environment;
+\item analysis procedure and stopping rules.
+\end{enumerate}
+Reproducibility is not the same as truth. It is a condition for checking the reasoning that produced a result.
+
+\section{Project application}
+For a computational-thinking project, begin with a problem from a domain you understand. Define the target phenomenon before selecting a technique. Include a model diagram, a table of variables, pseudocode, implementation tests, at least one sensitivity analysis, and a section called \enquote{What this model cannot establish.} When presenting the work, be prepared to change a parameter or rule and explain why the interpretation changes.
+
+\section{Summary and key terms}
+Computational thinking makes choices about decomposition, representation, and automation explicit. State-transition models support reasoning about software. Agent-based models can reveal emergence from local rules. Verification concerns implementation against a specification; validation concerns adequacy for a purpose. Random seeds, sensitivity analysis, and documented parameters support reproducibility and honest interpretation.
+
+\begin{keyterms}computational thinking; abstraction; representation; state; transition; invariant; deterministic; stochastic; agent-based model; emergence; verification; validation; sensitivity analysis; reproducibility.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Write an invariant for CivicQueue's appointment states and give one invalid transition.}
+\solution{One invariant is that an appointment marked completed must have previously been confirmed. An invalid transition is cancelled $\rightarrow$ completed. A legitimate new booking after cancellation should create a new appointment identifier rather than silently changing the old record.}
+
+\exercise{Why does a random seed help a simulation study? What does it not do?}
+\solution{It makes a particular pseudo-random sequence reproducible, allowing a reviewer to rerun the same case. It does not remove uncertainty, guarantee that the seed is representative, or validate the model.}
+
+\exercise{Design a sensitivity analysis for the segregation model.}
+\solution{Choose a tolerance range, for example 0.3 to 0.8, specify grid size and occupancy, run multiple seeds at each value, and report the mean and variation of a pre-defined segregation measure. Do not change the stopping rule or outcome definition between parameter values without documenting it.}
+
+\section{Further reading}
+Computational thinking connects algorithm design, abstraction, automation, data representation, and agent-based formalisation. For algorithmic foundations, see \citet{cormen2022introduction}; for the relation between models and computation, see \citet{abelson1996structure}.

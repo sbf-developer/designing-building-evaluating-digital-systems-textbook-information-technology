@@ -1,0 +1,122 @@
+\chapter{Information technology as a way of shaping action}
+\label{ch:it}
+
+\section{A motivating problem}
+Imagine a municipality that wants to reduce missed appointments at a public service centre. Someone proposes an app that lets citizens book, reschedule, and receive reminders. The proposal sounds technical, but the problem is not only technical. Are appointments currently missed because people forget, because the booking process is confusing, because transport is unreliable, or because the available times conflict with work? Who may see a citizen's case? What happens when a person has no smartphone? Which employee is responsible when two systems disagree?
+
+The example is the starting point for CivicQueue, the recurring case in this book. The application matters, but so do the policy, the work routines, the data definitions, the interface, the organisational incentives, and the evidence used to decide whether the intervention helped.
+
+\learningobjectives{By the end of this chapter, you should be able to distinguish computer science, software engineering, information systems, HCI, and digitalisation; describe a digital system as a technical and sociotechnical object; identify boundaries, stakeholders, assumptions, and failure modes; and formulate an initial problem statement suitable for a real project.}
+
+\section{The five-minute explanation}
+Information technology is the study and practice of using representations, computation, communication, and automated action to support human and organisational purposes. A computer is not the purpose. It is a general mechanism for manipulating representations according to rules.
+
+\plainlanguage{If a paper form is replaced by a web form, that is digitisation: a change in medium. If the organisation changes how cases are allocated, who can act, what evidence is collected, and how citizens participate, that is digitalisation: a change in practice enabled by digital technology. The two often occur together, but they are not the same.}
+
+Four perspectives help us ask different questions:
+\begin{description}
+\item[Computer science] What can be computed, how can it be represented, and how efficiently and correctly can it be done?
+\item[Software engineering] How can a team produce and maintain software that is reliable, secure, usable, and adaptable under constraints?
+\item[Information systems] How do technology, people, processes, rules, and organisations combine to create or fail to create value?
+\item[Human--computer interaction] How do people understand, use, experience, and appropriate interactive systems, and how should those systems be designed and evaluated?
+\end{description}
+
+These are not competing definitions of the same job. They are complementary lenses. A system can be computationally efficient but organisationally useless, socially harmful, or impossible for users with disabilities.
+
+\section{From a problem to a system}
+A useful first move is to separate five statements that are often collapsed into one:
+\begin{enumerate}
+\item \textbf{Situation:} appointments are missed more often than the organisation considers acceptable.
+\item \textbf{Interpretation:} reminders and flexible rescheduling may address part of the problem.
+\item \textbf{Intervention:} build CivicQueue with a reminder and rescheduling workflow.
+\item \textbf{Mechanism:} the workflow reduces forgetting or lowers the cost of changing an appointment.
+\item \textbf{Outcome claim:} after adoption, missed appointments decrease without unacceptable exclusion or administrative burden.
+\end{enumerate}
+The fifth statement is empirical. It cannot be established merely by demonstrating that the application runs.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=11mm and 13mm, every node/.style={font=\small}, box/.style={draw, rounded corners, align=center, minimum width=30mm, minimum height=12mm, fill=pale}, arr/.style={-{Latex}, thick, blue}]
+\node[box] (situation) {Situation\\and need};
+\node[box,right=of situation] (model) {Problem\\model};
+\node[box,right=of model] (artefact) {Digital\\artefact};
+\node[box,below=of artefact] (use) {Use in an\\organisation};
+\node[box,left=of use] (evidence) {Evaluation\\evidence};
+\draw[arr] (situation)--(model);
+\draw[arr] (model)--(artefact);
+\draw[arr] (artefact)--(use);
+\draw[arr] (use)--(evidence);
+\draw[arr] (evidence)--(situation);
+\end{tikzpicture}
+\caption{A digital intervention is a cycle of interpretation, construction, use, and evidence.}
+\label{fig:it-cycle}
+\end{figure}
+
+The arrows in Figure~\ref{fig:it-cycle} are not a rigid waterfall. New evidence can change the problem model; implementation constraints can reveal that the proposed intervention is infeasible; use can produce unexpected workarounds.
+
+\section{A formal vocabulary for boundaries}
+For a first approximation, model a system as a tuple
+\[
+S=(I,O,X,T,R),
+\]
+where $I$ is a set of inputs, $O$ a set of outputs, $X$ a set of internal states, $T$ a transition rule, and $R$ a set of relevant constraints or requirements. An input might be a request to reschedule. A state might record an appointment and its status. The transition rule determines which state follows a request. An output might be a confirmation page or a message to a staff system.
+
+This model is useful because it forces us to ask what changes and what is observed. It is incomplete because real systems also include people, institutions, physical infrastructure, incentives, and interpretations. In CivicQueue, a transition such as ``appointment confirmed'' is not merely a database update: it may trigger a legal obligation, a staff workflow, and a citizen expectation.
+
+\section{History and intellectual context}
+The modern field grew from several traditions: mathematical logic and computation, engineering of reliable artefacts, studies of organisations and information, and research into human action and communication. Turing's analysis of computation helped establish questions about what a machine can do and how we should describe machine behaviour \citep{turing1950computing}. Later, the expansion of networked computing made the boundary between a software product and an organisation increasingly porous.
+
+The history matters because terms such as ``automation'' and ``intelligence'' carry assumptions. A technical system does not become neutral merely because its rules are expressed in code. Choices about categories, defaults, thresholds, and access rights are policy choices as well as implementation choices.
+
+\section{Working example: a bounded problem statement}
+An unhelpful project statement is: ``Build an app for appointments.'' It identifies a solution before establishing the problem. A stronger initial formulation is:
+
+\begin{quote}
+How can a public-service centre support citizens in changing appointments without telephone contact, while preserving accessibility, privacy, staff control, and a reliable record of appointment status?
+\end{quote}
+
+The question is still broad, but it identifies an activity, a context, constraints, and a boundary. It does not promise that a digital channel will reduce missed appointments. That is a claim to investigate.
+
+\subsection{Stakeholders and system boundary}
+Primary stakeholders include citizens, front-desk staff, case workers, managers, and system administrators. Secondary stakeholders include accessibility advisers, data-protection officers, the organisation that supplies the calendar service, and people affected by resource allocation but not directly using the app. A boundary diagram should distinguish:
+\begin{itemize}
+\item the CivicQueue application;
+\item external identity, calendar, and notification services;
+\item the municipality's case system;
+\item people and routines that interpret the outputs.
+\end{itemize}
+
+\warningbox{A system boundary is an analytical decision, not a fact discovered in the code. If the boundary excludes the call centre, language support, or the notification provider, the project may hide important causes of failure.}
+
+\section{Professional and ethical responsibility}
+The developer's responsibility is not exhausted by implementing the requested feature. Questions include data minimisation, meaningful consent, retention, access control, accessibility, error recovery, vendor dependency, and the consequences of exclusion. The GDPR provides a legal framework for personal-data processing, but compliance is not identical to ethical adequacy \citep{gdpr2016}.
+
+A responsible project makes uncertainty visible. It documents which requirements came from stakeholders, which are assumptions, which are design decisions, and which were evaluated. It gives users a path to recover from mistakes and a human route when the digital path fails.
+
+\section{Using the chapter in a project}
+Start a project notebook with four tables:
+\begin{enumerate}
+\item situation and problem evidence;
+\item stakeholder interests and risks;
+\item assumptions and open questions;
+\item proposed artefacts and evidence needed to evaluate them.
+\end{enumerate}
+When documenting the work, separate the problem analysis from the solution proposal. When presenting it, be ready to explain why the boundary is reasonable, which stakeholder is missing, and what evidence would change your interpretation.
+
+\section{Summary and key terms}
+Information technology joins computation, artefacts, people, and institutions. Computer science, software engineering, information systems, and HCI answer different but connected questions. Digitalisation changes practices and relations, not just file formats. A running application is an intervention, not automatically a solution or a research result.
+
+\begin{keyterms}information technology; digitisation; digitalisation; computer science; software engineering; information systems; HCI; stakeholder; system boundary; sociotechnical system; requirement; intervention; mechanism; outcome.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Choose a familiar service. Write one sentence describing its situation, one sentence describing a possible intervention, and one sentence describing an outcome that would require evidence.}
+\solution{For a library, the situation might be that reserved books are not collected in time. The intervention might be a reminder and cancellation workflow. The outcome claim could be that the proportion of reservations collected within seven days increases without disadvantaging users who do not use email. The three sentences are deliberately different kinds of statement.}
+
+\exercise{Which perspective is most directly concerned with a confusing rescheduling screen: computer science, software engineering, information systems, or HCI? Which other perspectives still matter?}
+\solution{HCI is the most direct perspective because it concerns interaction and understanding. Software engineering matters because the screen must be maintainable and integrated with reliable state transitions; computer science matters for the underlying computation; information systems matters because the screen changes a work process and may redistribute responsibility.}
+
+\exercise{Draw the boundary of CivicQueue twice: once narrowly around the web application and once around the complete appointment service. What becomes visible in the second drawing?}
+\solution{The wider boundary reveals staff routines, telephone fallback, identity services, notification providers, accessibility support, legal constraints, and the meaning of an appointment status. It also shows that technical success is only one condition for service success.}
+
+\section{Further reading}
+For further reading, compare the sociotechnical perspective in \citet{orlikowski1992duality} with the information-systems success model in \citet{delone1992success}, and explore the project-based learning literature if you are working collaboratively.

@@ -1,0 +1,76 @@
+\chapter{Integration projects and worked solutions}
+\label{ch:integration-projects}
+
+\section{How to use these projects}
+The following projects are opportunities to bring the book's ideas together. Each requires a problem formulation, model, implementation or design, evidence, reflection, and a clear presentation. Choose one that matches your interests, but retain the full chain from problem to claim.
+
+\section{Project A: an agent-based public-service model}
+\textbf{Problem.} Under what conditions can a small change in appointment flexibility affect queue pressure in a simplified service-centre model?
+
+\textbf{Deliverables.} Define agents, state variables, transition rules, scheduling assumptions, outcome measures, random seeds, sensitivity analysis, code tests, and a limitation section. Do not claim to predict a real municipality from the model.
+
+\textbf{Worked solution outline.} Represent citizens as agents with arrival, service, and rescheduling states. Represent staff as capacity-constrained servers. Compare a baseline rule with a flexibility rule under the same seeds and demand scenarios. Verify state transitions and conservation of appointments. Validate only the computational implementation and argue cautiously about the model's relevance.
+
+\section{Project B: a complete vertical slice}
+\textbf{Problem.} Build one accessible workflow for a community organisation to request and confirm appointments.
+
+\textbf{Deliverables.} Stakeholder analysis, user story and acceptance criteria, domain model, interface prototype, HTML/CSS/JavaScript or server-rendered client, API, database schema, tests, threat model, deployment instructions, and a recorded decision log.
+
+\textbf{Worked solution outline.} Start with one task. Implement a thin route, a domain service, and a parameterised repository. Add the success path and one conflict path before expanding features. Demonstrate how the same domain invariant is protected in tests and in the database. Evaluate task completion and error recovery with a stated protocol.
+
+\section{Project C: comparative interface evaluation}
+\textbf{Problem.} Does a revised appointment form reduce interpretation errors for a defined group and task?
+
+\textbf{Deliverables.} Construct definition, hypotheses, prototype versions, sampling plan, task script, measures, consent, analysis plan, results, validity discussion, and accessible materials.
+
+\textbf{Worked solution outline.} Define an error before recruitment. Randomise order if a within-participant comparison is used, or justify a between-participant design. Report denominators and uncertainty. Interpret a difference only within the task and sample. Include qualitative observations that explain how errors occurred, while keeping exploratory findings separate from pre-specified outcomes.
+
+\section{Project D: human-centred AI assistant}
+\textbf{Problem.} Design and evaluate an assistant that helps staff find relevant policy information without making final eligibility decisions.
+
+\textbf{Deliverables.} Human task analysis, data and privacy map, baseline search workflow, model or retrieval design, evaluation split, calibration or uncertainty discussion, interface explanation, correction and escalation path, subgroup risk analysis, model documentation, and system evaluation.
+
+\textbf{Worked solution outline.} Compare the assistant to keyword search or a curated index. Measure retrieval quality, time, error types, and staff verification. Do not count fluent text as accuracy. Require citation or source display, visible uncertainty, and a route for reporting errors. Evaluate the combined human--AI workflow and document when the simpler baseline is preferable.
+
+\section{Project E: digital product experiment}
+\textbf{Problem.} Test whether a defined group would adopt a service that reduces a costly coordination task.
+
+\textbf{Deliverables.} Problem interviews, segment, value proposition, alternative map, experiment, threshold, cost model, distribution route, privacy and accessibility plan, result, pivot decision, and reflection.
+
+\textbf{Worked solution outline.} Use a manual or low-fidelity experiment to test the riskiest assumption. Observe behaviour rather than asking only whether the idea sounds good. Track the denominator and recruitment channel. Treat a negative result as information about the segment, problem, intervention, or distribution, not as a verdict on the team's worth.
+
+\section{Cross-project review rubric}
+\begin{longtable}{p{0.23\textwidth}p{0.64\textwidth}}
+\caption{A compact rubric for integration work.}\\
+\toprule
+\textbf{Dimension} & \textbf{Evidence of strong work}\\
+\midrule
+Problem and delimitation & The problem is evidenced, bounded, and not silently replaced by a preferred technology.\\
+Conceptual reasoning & Terms, models, assumptions, and mechanisms are defined and used consistently.\\
+Technical quality & The implementation or prototype is runnable, tested, secure within scope, and explained.\\
+Human and organisational fit & Users, accessibility, privacy, work routines, and power are considered with evidence.\\
+Evaluation & The method fits the claim; measures, uncertainty, validity, and limitations are explicit.\\
+Reflection & Decisions, changes, group process, failures, and trade-offs are analysed rather than narrated.\\
+Communication & The written account, figures, demonstration, and presentation form one coherent argument.\\
+\bottomrule
+\end{longtable}
+
+\section{Final synthesis}
+The book's topics are not separate islands. Computational thinking supplies representations and transitions. Programming makes procedures executable. Algorithms organise time and space. Software engineering coordinates change. Modelling makes boundaries and responsibilities discussable. Databases preserve state. Web development connects people and services. HCI studies action and interpretation. Information-systems analysis follows technology into organisations. Research disciplines claims. Human-centred AI extends the same questions to probabilistic systems.
+
+A graduate who can build but not evaluate is incomplete. A graduate who can critique but not implement is also incomplete. The professional standard is the ability to move between abstraction and practice while keeping assumptions visible.
+
+\section{Questions for a critical presentation}
+\begin{enumerate}
+\item What problem did you choose, and what evidence shows that it is real?
+\item Which abstraction or model made the problem tractable?
+\item Which invariant or requirement does the system protect?
+\item Which design alternative did you reject and why?
+\item What happens under failure, misuse, exclusion, or organisational resistance?
+\item What does your evaluation support?
+\item What does it not support?
+\item What would you do differently with more time or evidence?
+\end{enumerate}
+
+\section{Final checklist}
+Before sharing or submitting the work, run the code, rebuild the database from an empty state, execute the tests, inspect every figure, check links and citations, remove secrets and personal data, verify accessibility of the interface and PDF, and ask another person to reproduce the setup. Then read the conclusion as a critical reader: is every strong sentence supported by the method and evidence?

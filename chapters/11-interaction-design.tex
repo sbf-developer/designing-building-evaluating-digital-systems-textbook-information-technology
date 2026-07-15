@@ -1,0 +1,83 @@
+\chapter{Interaction design and human--computer interaction}
+\label{ch:hci}
+
+\section{A motivating problem}
+A CivicQueue prototype contains every required field and still confuses users. Citizens do not know whether a slot is reserved, staff cannot tell which changes need approval, and an error message says only \enquote{invalid input}. The problem is not visual taste. It is the relationship between a person, a goal, a representation, an action, and feedback.
+
+\learningobjectives{You should be able to explain perception, attention, memory, mental models, affordances, signifiers, feedback, constraints, mapping, cognitive load, errors and recovery, user-centred design, participatory methods, information architecture, interaction flows, and accessibility; and distinguish a design preference from an empirical claim.}
+
+\section{The five-minute explanation}
+Interaction design shapes what people can do, what they think they can do, and what the system communicates about what happened. A good interface does not eliminate human judgment; it supports people in forming an accurate working understanding and recovering when things go wrong.
+
+\plainlanguage{If a button looks available, users may expect it to work. If a change is saved but no feedback appears, users may repeat the action. If the only error message is red text, a person who cannot see colour may miss it. Design is the management of expectations and consequences.}
+
+\section{Human cognition and action}
+People have limited attention and working memory. They use recognition, prior knowledge, external cues, and routines. A mental model is the user's working explanation of how a system behaves. Interfaces can support or disrupt that model. The goal is not to memorise a fixed number of interface rules; it is to reduce unnecessary cognitive work while making important distinctions visible.
+
+Affordance describes what an object allows; a signifier communicates how it may be used. A flat rectangle may afford clicking in software but needs a signifier such as label, focus style, and pointer behaviour. Feedback tells the user what happened. Constraints prevent invalid actions or make them harder. Mapping connects controls to effects. These concepts are related but not interchangeable.
+
+\section{User-centred and participatory design}
+User-centred design is an iterative process involving users, tasks, context, prototyping, and evaluation. Participatory design gives affected people a role in shaping the problem and solution, not only in testing a finished interface. Neither approach guarantees fairness: the recruited users may not represent people with less power, and organisational constraints may limit which suggestions can be adopted.
+
+Useful methods include:
+\begin{description}
+\item[Contextual inquiry] Observe work in context while asking about actions and exceptions.
+\item[Interview] Elicit experiences, goals, language, and interpretations; do not treat reported preference as direct evidence of behaviour.
+\item[Observation] Record what happens, including workarounds, interruptions, and artefacts.
+\item[Task analysis] Decompose a goal into actions, decisions, information needs, and failure recovery.
+\item[Persona] A synthesis of research patterns, not a fictional stereotype.
+\item[Scenario] A situated narrative that makes goals, context, and constraints concrete.
+\end{description}
+
+\section{Information architecture and interaction flows}
+Information architecture organises content and actions so that users can find, interpret, and navigate them. For CivicQueue, \enquote{My appointments}, \enquote{Available services}, and \enquote{Help and alternatives} may be more understandable than internal database categories. An interaction flow should include the start state, action, system feedback, alternative paths, error recovery, and end state.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=13mm and 15mm, every node/.style={font=\small}, box/.style={draw, rounded corners, fill=pale, minimum width=32mm, minimum height=11mm, align=center}, arr/.style={-{Latex}, thick, blue}]
+\node[box] (view) {view appointment};
+\node[box,right=of view] (choose) {choose new slot};
+\node[box,right=of choose] (confirm) {confirm change};
+\node[box,below=of confirm] (feedback) {success or conflict};
+\node[box,left=of feedback] (help) {human fallback};
+\draw[arr] (view)--(choose);
+\draw[arr] (choose)--(confirm);
+\draw[arr] (confirm)--(feedback);
+\draw[arr] (feedback)--(help);
+\draw[arr] (feedback.south) to[out=270,in=270] (view.south);
+\end{tikzpicture}
+\caption{An interaction flow includes success, conflict, and recovery paths.}
+\label{fig:interaction-flow}
+\end{figure}
+
+\section{Prototyping}
+A paper sketch, wireframe, clickable prototype, and working system answer different questions. Low-fidelity prototypes make information architecture and task flow cheap to change. High-fidelity prototypes can test visual hierarchy and interaction timing but may cause stakeholders to infer that backend behaviour already exists. Label what is real, simulated, or intentionally omitted.
+
+\section{Visual hierarchy and inclusive design}
+Typography, spacing, grouping, contrast, and alignment communicate structure. Aesthetic consistency can support recognition, but preference is not usability evidence. Accessibility includes semantic structure, keyboard operation, focus visibility, contrast, text resizing, captions, error identification, and compatibility with assistive technology. WCAG 2.2 provides testable success criteria, but conformance alone does not prove that a particular service is usable in context \citep{w3cwcag22}.
+
+Inclusive design asks who is absent from the default. Consider language, literacy, motor and sensory variation, cognitive load, device access, connectivity, age, and institutional trust. A digital-only process may be efficient for one group and exclusionary for another.
+
+\section{Ethics, privacy, and dark patterns}
+An interface can manipulate through hidden costs, confusing consent, forced continuity, or defaults that benefit the provider over the user. Dark-pattern analysis asks who gains from the friction and who bears it. Privacy-friendly design uses data minimisation, clear purposes, granular choices, and deletion or correction routes. A consent checkbox cannot repair an interface that makes refusal practically impossible.
+
+\section{Project application}
+Ground design decisions in observed tasks and stakeholder language. Include a rationale for the interaction structure, a prototype history, accessibility considerations, and a map from problem to design response. When presenting the work, distinguish what users said, what they did, what you inferred, and what remains unknown.
+
+\section{Summary and key terms}
+Interaction design manages goals, actions, representations, feedback, and recovery. Cognitive concepts guide hypotheses rather than replace evaluation. User-centred and participatory methods reveal context but require careful sampling and interpretation. Prototypes have different purposes. Accessibility and privacy are design conditions, not decorative additions.
+
+\begin{keyterms}interaction design; HCI; mental model; affordance; signifier; feedback; constraint; mapping; cognitive load; user-centred design; participatory design; contextual inquiry; persona; scenario; information architecture; prototype; inclusive design; dark pattern.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{A user submits a rescheduling form and the page simply returns to the top. Which design concepts are missing?}
+\solution{The system lacks visible and programmatically available feedback, error identification, focus management, and a clear mapping between action and outcome. The solution may require both interface changes and a backend response that distinguishes success from validation failure.}
+
+\exercise{Why is a persona not evidence that every user has the persona's preferences?}
+\solution{A persona is a synthesis of patterns in collected research. It can focus design attention, but it abstracts away variation and depends on sampling and interpretation. It should be accompanied by research notes and limitations.}
+
+\exercise{Give one reason a paper prototype can be more informative than a polished prototype.}
+\solution{It invites stakeholders to criticise structure and content without assuming that implementation is fixed. It is cheaper to change and less likely to hide uncertainty behind visual polish.}
+
+\section{Further reading}
+Read \citet{norman2013design} for concepts of action and feedback, and \citet{rogers2011interaction} for interaction-design methods. Adapt the methods to the question, users, risks, and evidence available in the setting you are studying.

@@ -1,0 +1,67 @@
+\chapter{Agile development, PBL, and collaborative practice}
+\label{ch:agile-pbl}
+
+\section{A motivating problem}
+A group has a promising idea, four different assumptions, and six weeks before a project demonstration. One student writes most of the code, another produces diagrams at the end, and a third discovers that the target users were unavailable. The group has been busy but has not created a shared learning process.
+
+\learningobjectives{You should be able to explain iterative and incremental development; compare Scrum, Kanban, XP, plan-driven, and hybrid approaches; use backlogs, reviews, retrospectives, definitions of done, and continuous integration critically; explain Conway's and Brooks's laws; and apply problem- and project-based learning principles to team work and reflection.}
+
+\section{The five-minute explanation}
+Agile development is a family of principles and practices for learning and delivering under changing conditions. It is not a synonym for no planning, no documentation, or permanent urgency. Iteration means revisiting decisions; increment means producing a usable addition. A team can iterate without producing a coherent increment, or produce increments without learning from users.
+
+Problem-based learning emphasises problem-oriented project work, student responsibility, collaboration, and reflection \citep{kolmos2007process}. That overlaps with agile practices but is not identical to Scrum. PBL is an educational model; Scrum is a work-management framework.
+
+\section{Scrum, Kanban, and XP}
+Scrum organises work around a product goal, backlog, sprint, review, and retrospective. Kanban visualises flow and limits work in progress. Extreme Programming emphasises technical practices such as test-driven development, pair programming, simple design, continuous integration, and collective ownership. Use the practice that addresses a real coordination or quality problem.
+
+A backlog is a changing model of possible work. A story should describe a user or system goal, but a story is not a full requirement specification. Acceptance criteria, constraints, data assumptions, and risks still need documentation. The Definition of Done should include the quality conditions that make an increment usable, tested, reviewable, and explainable.
+
+\section{Planning and estimation}
+Estimation is a forecast under uncertainty, not a moral judgement about effort. Story points can support relative discussion but do not become units of time by magic. A plan should identify dependencies, unknowns, decision deadlines, and a smallest useful outcome. Burn-down charts are descriptive; they do not diagnose whether the right work is being done.
+
+\section{Technical practices}
+Continuous integration reduces the cost of discovering incompatible changes. Pairing and review distribute knowledge. Automated tests make refactoring safer. Documentation should capture domain terms, decisions, interfaces, setup, risk, and operational assumptions. In regulated or safety-critical settings, agile practices may be combined with formal requirements, traceability, verification, and change control.
+
+\section{Conway's and Brooks's laws}
+Conway's law is an empirical observation that system designs tend to reflect communication structures. It is a useful hypothesis about organisational architecture, not a deterministic law. Brooks's law states that adding people to a late software project can make it later because communication and onboarding costs increase. Both laws point to coordination costs that a task board can hide.
+
+Psychological safety affects whether people report uncertainty, challenge a design, admit mistakes, and ask for help. A retrospective should examine work conditions and system outcomes, not turn into blame.
+
+\section{PBL project practice}
+A disciplined project-based cycle can include:
+\begin{enumerate}
+\item formulate and delimit a problem;
+\item identify learning needs and relevant literature;
+\item divide responsibility while preserving shared understanding;
+\item develop artefacts and evidence iteratively;
+\item use supervision to test interpretations;
+\item analyse the product and the process;
+\item communicate results in a written account, demonstration, and clear presentation.
+\end{enumerate}
+Group work is not simply parallel individual work. Interfaces among members, integration, decisions, and responsibility for the whole argument must be managed.
+
+\section{Reflection and division of responsibility}
+A process reflection should use evidence: meeting notes, decision logs, Git history, issue flow, peer feedback, and changes in scope. Avoid confessional writing without analysis. Explain what happened, why it happened, what effect it had, and what practice would change.
+
+One person may lead database work, another interaction research, and another deployment, but everyone should understand the system boundary, research question, major decisions, and limitations. Specialisation without integration creates fragile work.
+
+\section{Presenting and reviewing the work}
+A convincing project makes its problem, decisions, evidence, limitations, and contribution visible. Each contributor should be able to explain both their own work and the whole project's argument. Demonstrations should be rehearsed with failure paths, not only the ideal click sequence.
+
+\section{Summary and key terms}
+Agile methods manage learning and delivery under uncertainty but are not universally superior. Scrum, Kanban, XP, and plan-driven methods solve different coordination problems. PBL is an educational model built around problem-oriented project work and reflection. Estimation, documentation, review, CI, psychological safety, and integration determine whether a group can create shared evidence.
+
+\begin{keyterms}agile; iterative; incremental; Scrum; Kanban; XP; backlog; sprint; review; retrospective; Definition of Done; estimation; continuous integration; Conway's law; Brooks's law; psychological safety; PBL; supervision; reflection.\end{keyterms}
+
+\section{Exercises and worked solutions}
+\exercise{Why can a team follow Scrum and still fail to learn?}
+\solution{It can complete planned tickets without testing assumptions, involving users, measuring outcomes, or revising the problem formulation. Ceremonies organise communication; they do not guarantee inquiry or useful increments.}
+
+\exercise{What should a Definition of Done contain for a CivicQueue feature?}
+\solution{It might require implemented domain logic, tests for success and conflict, reviewed code, updated API and data documentation, accessible feedback, security checks, and a demonstrated path in a test environment. The exact definition depends on risk and project scope.}
+
+\exercise{How can division of responsibility improve and harm a project?}
+\solution{It can reduce overload and allow focused expertise. It can harm the project when knowledge becomes isolated, integration is postponed, or one person's work cannot be explained or tested by the group. Rotate review and preserve a shared system model.}
+
+\section{Further reading}
+Read the Agile Manifesto \citep{agilemanifesto2001}, the Scrum Guide \citep{scrumguide2020}, and the research on alignment between PBL and assessment \citep{kolmos2008alignment}. Do not treat a framework's vocabulary as evidence that its use caused project success.
