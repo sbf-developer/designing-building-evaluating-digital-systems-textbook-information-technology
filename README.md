@@ -16,7 +16,7 @@ Requirements:
 make pdf
 ```
 
-The PDF is written to `build/information-technology-textbook.pdf`.
+The PDF is written to `book/information-technology-textbook.pdf`.
 
 To build without `make`:
 
@@ -25,7 +25,8 @@ pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main.te
 bibtex build/main
 pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main.tex
 pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main.tex
-cp build/main.pdf build/information-technology-textbook.pdf
+mkdir -p book
+cp build/main.pdf book/information-technology-textbook.pdf
 ```
 
 ## Test the examples

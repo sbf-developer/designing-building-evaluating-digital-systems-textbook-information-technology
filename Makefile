@@ -1,12 +1,12 @@
 PYTHON ?= python3
-PDF := build/information-technology-textbook.pdf
+PDF := book/information-technology-textbook.pdf
 
 .PHONY: all pdf test figures clean
 
 all: pdf test
 
 pdf:
-	mkdir -p build
+	mkdir -p build book
 	latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build -auxdir=build main.tex
 	cp build/main.pdf $(PDF)
 
